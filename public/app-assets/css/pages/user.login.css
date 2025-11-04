@@ -1,0 +1,59 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.login-container {
+  height: 100vh;
+  background: url('../../../images/userlogin.jpg') no-repeat center center/cover;
+  position: relative;
+  color: #fff;
+}
+.login-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 0;
+}
+
+.overlay-content {
+  position: relative;
+  z-index: 1;
+}
+
+.text-section h1 {
+  color: white;
+}
+
+.text-section p {
+  color: #e0e0e0;
+  font-size: 1.1rem;
+  margin-top: 10px;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  padding: 40px;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.btn-login {
+  background-color: #228aaa;
+  border: none;
+  border-radius: 10px;
+  width: 100%;
+  padding: 10px;
+  font-weight: 600;
+  color: white;
+  transition: 0.3s;
+}
+
+.btn-login:hover {
+  background-color: #0b89af;
+}
