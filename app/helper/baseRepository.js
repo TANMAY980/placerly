@@ -119,7 +119,7 @@ class BaseRepository {
 
     async deleteById(id) {
         try {
-            return await this.#model.findByIdAndRemove(id);
+            return await this.#model.findByIdAndDelete(id);
         } catch (error) {
             throw error;
         }

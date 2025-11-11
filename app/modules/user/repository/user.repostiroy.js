@@ -5,7 +5,8 @@ const usermodel=require('../model/user.model')
 class userRepository extends baseRepository{
     constructor(){
        super(usermodel) 
-    }
+    };
+
     async fetch_profile_details(data){
         try {
             const user_data=await usermodel.aggregate([
@@ -23,12 +24,12 @@ class userRepository extends baseRepository{
                         subscription:1
                     }
                 }
-            ])
+            ]);
             return user_data;
             
         } catch (error) {
             throw error;
         }
-    }
-}
-module.exports=new userRepository()
+    };
+};
+module.exports=new userRepository();

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        <%= page_title %>
+    </title>
+
+    <!-- jQuery -->
+    <script src="/plugins/jquery/jquery.min.js"></script>
+    <!-- Moment + DataTables -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+
+    <!-- Google Font -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" href="/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="/plugins/jqvmap/jqvmap.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="/plugins/daterangepicker/daterangepicker.css">
+    <!-- summernote -->
+    <link rel="stylesheet" href="/plugins/summernote/summernote-bs4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        <!-- Preloader -->
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="/dist/img/coin.gif" alt="PlacerlyLogo" height="60" width="60">
+        </div>
+
+        <!-- Navbar -->
+        <%- include('../views/adminpartials/navbar') %>
+            <!-- Main Sidebar -->
+            <%- include('../views/adminpartials/sidebar') %>
+                <!-- Content Wrapper -->
+                <div class="content-wrapper">
+                    <div class="content-header d-flex justify-content-between">
+                        <div class="container-fluid">
+                            <div class="row mb-3 align-items-center justify-content-between">
+                                <div class="col-sm-6">
+                                    <h3 class="m-0">Blog Details</h3>
+                                </div>
+                                <div class="col-sm-6 text-end">
+                                    <a href="<%=generateUrl('admin.blog.access')%>" class="btn btn-outline-primary">
+                                        <i class="fas fa-arrow-left me-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Content Header -->
+                    </head>
+
+                    <body>
+                        <div class="blog-container">
+
+                            <h1 class="blog-title text-center ">
+                                <%= response.title %>
+                            </h1>
+                            <p class="blog-meta">
+                                <strong>Added by:</strong>
+                                <%= response.addedby?.[0]?.name || 'Admin' %> |
+                                    <strong>Date:</strong>
+                                    <%= response.createdAt.toLocaleDateString() %> |
+                                        <strong>Status:</strong>
+                                        <span
+                                            class="badge <%= response.status === 'active' ? 'bg-success' : 'bg-secondary' %>">
+                                            <%= response.status %>
+                                        </span>
+                            </p>
+
+                            <!-- Blog Image Gallery -->
+                            <div class="cover-gallery">
+                                <% if (response.coverImage && response.coverImage.length> 0) { %>
+                                    <% response.coverImage.forEach(img=> { %>
+                                        <img src="<%= img %>" alt="Blog Cover Image" />
+                                        <% }) %>
+                                            <% } else { %>
+                                                <img src="https://via.placeholder.com/800x400?text=No+Image+Available"
+                                                    alt="Placeholder" />
+                                                <% } %>
+                            </div>
+
+                            <!-- Blog Description -->
+                            <div class="blog-description">
+                                <%= response.description %>
+                            </div>
+
+                            <!-- Author Section -->
+                            <div class="author-info">
+                                <div>
+                                    <h6>
+                                        <%= response.addedby?.[0]?.name || 'Unknown Author' %>
+                                    </h6>
+                                    <span>Blog Author</span>
+                                </div>
+                            </div>
+
+                            <% if (response.updatedInfo && response.updatedInfo.length> 0) { %>
+                                <div class="update-history mt-5">
+                                    <h4 class="section-title">
+                                        <i class="fas fa-history me-2"></i> Update History
+                                    </h4>
+                                    <% response.updatedInfo.forEach((update, index)=> { %>
+                                        <div class="update-card">
+                                            <div class="update-header">
+                                                <div class="user-info">
+                                                    <div>
+                                                        <h6>
+                                                            <%= update.updatedby?.[0]?.name || 'Admin' %>
+                                                        </h6>
+                                                        <small>
+                                                            <%= update.updatedAt ? new
+                                                                Date(update.updatedAt).toLocaleString() : '' %>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                                <span class="update-index">#<%= index + 1 %></span>
+                                            </div>
+
+                                            <div class="update-body">
+                                                <p><strong>Updated Fields:</strong></p>
+                                                <ul>
+                                                    <% update.updatedfield.forEach(field=> { %>
+                                                        <li><i class="fas fa-check-circle text-success me-1"></i>
+                                                            <%= field %>
+                                                        </li>
+                                                        <% }) %>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <% }) %>
+                                </div>
+                                <% } else { %>
+                                    <div class="update-history mt-5 text-center text-muted">
+                                        <i class="fas fa-info-circle"></i> No updates recorded yet.
+                                    </div>
+                                    <% } %>
+                        </div>
+
+
+                </div>
+    </div>
+
+    <!-- Footer -->
+    <%- include('../views/adminpartials/footer') %>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark"></aside>
+        </div>
+
+        <!-- JS Libraries -->
+        <script src="/plugins/jquery-ui/jquery-ui.min.js"></script>
+        <script>
+            $.widget.bridge('uibutton', $.ui.button);
+        </script>
+        <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/plugins/chart.js/Chart.min.js"></script>
+        <script src="/plugins/sparklines/sparkline.js"></script>
+        <script src="/plugins/jqvmap/jquery.vmap.min.js"></script>
+        <script src="/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+        <script src="/plugins/jquery-knob/jquery.knob.min.js"></script>
+        <script src="/plugins/daterangepicker/daterangepicker.js"></script>
+        <script src="/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+        <script src="/plugins/summernote/summernote-bs4.min.js"></script>
+        <script src="/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+        <script src="/dist/js/adminlte.js"></script>
+        <script src="/dist/js/demo.js"></script>
+        <script src="/dist/js/pages/dashboard.js"></script>
+
+        <!-- Feather Icons -->
+        <script src="https://unpkg.com/feather-icons"></script>
+        <script> feather.replace(); </script>
+
+        <!-- Datatable JS -->
+        <script src="/js/datatables/app-user-list.js"></script>
+        <style>
+            #loader {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 1050;
+            }
+
+            #loader img {
+                width: 90px;
+                height: 90px;
+                animation: spin 1s linear infinite;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+        <style>
+            body {
+                background-color: #f9f9fb;
+                font-family: "Poppins", sans-serif;
+            }
+
+            .blog-container {
+                max-width: 900px;
+                margin: 40px auto;
+                background: #fff;
+                border-radius: 16px;
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                padding: 30px;
+            }
+
+            .blog-title {
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 15px;
+            }
+
+            .blog-meta {
+                color: #777;
+                font-size: 0.95rem;
+                margin-bottom: 25px;
+            }
+
+            .cover-gallery img {
+                width: 100%;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                transition: transform 0.3s ease;
+            }
+
+            .cover-gallery img:hover {
+                transform: scale(1.02);
+            }
+
+            .blog-description {
+                position: relative;
+                background: linear-gradient(145deg, #ffffff, #f8f9fa);
+                border-left: 5px solid #0d6efd;
+                /* Accent color */
+                padding: 25px 30px;
+                border-radius: 10px;
+                font-size: 1.1rem;
+                color: #333;
+                line-height: 1.9;
+                font-family: "Merriweather", serif;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+                transition: all 0.3s ease;
+                white-space: pre-line;
+            }
+
+            .blog-description:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            }
+
+            .blog-description::first-letter {
+                font-size: 2rem;
+                font-weight: 700;
+                color: #0d6efd;
+                float: left;
+                margin-right: 8px;
+                line-height: 1;
+            }
+
+            .author-info {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-top: 30px;
+                padding-top: 20px;
+                border-top: 1px solid #eee;
+            }
+
+            .author-info img {
+                width: 55px;
+                height: 55px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+            .author-info h6 {
+                margin: 0;
+                font-weight: 600;
+            }
+
+            .author-info span {
+                font-size: 0.9rem;
+                color: #666;
+            }
+
+            .update-history {
+                margin-top: 40px;
+            }
+
+            .section-title {
+                font-weight: 600;
+                color: #343a40;
+                border-left: 4px solid #0d6efd;
+                padding-left: 10px;
+                margin-bottom: 20px;
+            }
+
+            .update-card {
+                background: #fff;
+                border: 1px solid #e5e5e5;
+                border-radius: 12px;
+                padding: 20px;
+                margin-bottom: 15px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+                transition: all 0.3s ease;
+            }
+
+            .update-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            }
+
+            .update-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px dashed #dcdcdc;
+                padding-bottom: 10px;
+                margin-bottom: 15px;
+            }
+
+            .user-info {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .user-info img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+            .user-info h6 {
+                margin: 0;
+                font-weight: 600;
+                color: #212529;
+            }
+
+            .user-info small {
+                color: #777;
+            }
+
+            .update-index {
+                font-weight: bold;
+                color: #6c757d;
+            }
+
+            .update-body ul {
+                padding-left: 20px;
+                margin: 0;
+            }
+
+            .update-body li {
+                list-style: none;
+                margin-bottom: 6px;
+                font-size: 0.95rem;
+            }
+        </style>
+
+</body>
+
+</html>

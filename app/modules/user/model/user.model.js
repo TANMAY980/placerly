@@ -1,5 +1,7 @@
-const mongoose=require('mongoose')
-const {Schema,model}=mongoose
+const mongoose=require('mongoose');
+const mongooseAggregatePaginate = require('mongoose-aggregate-paginate-v2');
+const {Schema,model}=mongoose;
+
 const userSchema=new Schema({
     firstName:{type:String,required:true},
     lastName:{type:String,required:true},
@@ -12,7 +14,12 @@ const userSchema=new Schema({
     terms_conditon:{type:Boolean,required:true,default:false},
     is_verified:{type:Boolean,default:false},
     subscription:[{type:mongoose.Schema.Types.ObjectId,ref:"subscription"}],
-    status:{type:String,enum:["block","unblock"],default:"unblock"}
-},{timestamps:true,versionKey:false})
+    subscribed:{type:Boolean,default:false},
+    status:{type:String,enum:["active","inactive","banned"],default:"active"},
+    isDeleted:{type:Boolean,default:false},   
+},{timestamps:true,versionKey:false});
+
+userSchema.plugin(mongooseAggregatePaginate);
+
 const usermodel=model("user",userSchema)
-module.exports=usermodel
+module.exports=usermodel;

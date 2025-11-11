@@ -30,7 +30,7 @@ class Uploadfile {
     });
 
     const upload = multer({ storage });
-    return upload.single(fieldName);
+    return upload.array(fieldName,5);
   }
 
   uploadAdminfile(fieldName) {
@@ -60,7 +60,7 @@ class Uploadfile {
     });
 
     const upload = multer({ storage });
-    return upload.single(fieldName);
+    return upload.array(fieldName,5);
   }
 }
 

@@ -6,11 +6,12 @@ const path=require('path');
 const{resolve,join}=require('path');
 const ejs=require('ejs');
 const cors=require('cors');
+const flash=require('connect-flash');
 const passport=require('passport');
 const RedisStore = require("connect-redis");
 const Redis = require("ioredis");
 const {swaggerui,swaggerSpec}=require('./app/helper/swagger')
-const authRouts=require('./app/routes/api/authentication.routes');
+const authRoutes=require('./app/routes/api/authentication.routes');
 const userRoutes=require('./app/routes/api/user.routes')
 
 dotenv.config();
@@ -25,6 +26,8 @@ app.use(cors({
     methods:["GET","PUT","POST","DELETE","PATCH"],
     credentials:true
 }));
+app.use(flash());
+app.use(session({ secret: 'delivery@&beverage@#', resave: true, saveUninitialized: true }));
 
 // app.use(
 //   session({
@@ -46,15 +49,12 @@ app.use(cors({
 const getProtocol=appConfig.appRoot.protocol;
 const getHost=appConfig.appRoot.host;
 const getPort=appConfig.appRoot.port;
-const isProd=appConfig.appRoot.isProd;
+const isProduction=appConfig.appRoot.isProd;
 const getAdminFolderName=appConfig.appRoot.getAdminFolderName;
 const getUserFolderName=appConfig.appRoot.getUserFolderName;
 const getApiFolderName=appConfig.appRoot.getApiFolderName;
 
-global.genrateurl=genrateurl=(routenames,routeParams={})=>{
-    const url=namedRouter.urlFor(routenames,routeParams)
-    return url
-};
+global.generateUrl = (route_name, route_param = {}) => namedRouter.urlFor(route_name, route_param);
 
 app.set("view engine","ejs");
 app.set("views",[join(__dirname,"./app/views"),join(__dirname,"./app/modules/")]);
@@ -65,7 +65,7 @@ app.use(express.static("./public"));
 
 app.use(passport.initialize())
 
-app.use("/api",[authRouts,userRoutes]);
+app.use("/api",[authRoutes,userRoutes]);
 app.use("/api-docs",swaggerui.serve,swaggerui.setup(swaggerSpec));
 
 (async()=>{
@@ -77,7 +77,7 @@ app.use("/api-docs",swaggerui.serve,swaggerui.setup(swaggerSpec));
         const adminApiFiles=await utils._readdir(`./app/routes/${getAdminFolderName}`);
         adminApiFiles.forEach((file)=>{
             if(!file || file[0] == ".") return;
-            namedRouter.use("/admin",require(join(__dirname,file)));
+            namedRouter.use('',require(join(__dirname,file)));
         });
         
         const userApiFiles=await utils._readdir(`./app/routes/${getUserFolderName}`);
@@ -86,11 +86,16 @@ app.use("/api-docs",swaggerui.serve,swaggerui.setup(swaggerSpec));
             namedRouter.use("/",require(join(__dirname,file)));
         });
 
+        namedRouter.buildRouteTable();
 
-        if(!isProd && process.env.SHOW_NAMED_ROUTES==="true"){
-            const adminRouteList=namedRouter.getRouteTable("/admin");
-            const userRouteList=namedRouter.getRouteTable("/");
-        };
+        if (!isProduction && process.env.SHOW_NAMED_ROUTES === "true") {
+            const adminRouteList = namedRouter.getRouteTable("/admin");
+            const userRouteList = namedRouter.getRouteTable("/");
+       
+            console.log("Route Tables:");
+            console.log("Admin Folder Routes:", adminRouteList);
+            console.log("User Folder Routes:", userRouteList);
+        }
 
         app.listen(getPort,()=>{
             console.log(`Application running on ${getProtocol}://${getHost}:${getPort}`);
