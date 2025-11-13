@@ -6,10 +6,7 @@ class Blog {
       const [total, active, inactive] = await Promise.all([
         blogRepository.getCountByParam({ isDeleted: false }),
         blogRepository.getCountByParam({ status: "active", isDeleted: false }),
-        blogRepository.getCountByParam({
-          status: "inactive",
-          isDeleted: false,
-        }),
+        blogRepository.getCountByParam({status: "inactive",isDeleted: false}),
       ]);
 
       res.render("blog/views/list.ejs", {
@@ -21,7 +18,7 @@ class Blog {
       console.log(error);
       req.flash("error", error.message);
     }
-  }
+  };
 
   async getall(req, res) {
     try {
@@ -52,17 +49,15 @@ class Blog {
         .status(500)
         .json({ status: 500, data: [], message: e.message });
     }
-  }
+  };
 
   async BlogCreate(req, res) {
     try {
       const { name, title, description } = req.body;
       const imageUrls = (req.files || []).map((file) => file.path);
       const blog = { name, title, description, coverImage: imageUrls };
-      console.log(blog);
 
       const blogdata = await blogRepository.save(blog);
-      console.log(blogdata);
 
       if (!blogdata) {
         return res
@@ -76,7 +71,7 @@ class Blog {
       console.log(error);
       return res.status(500).json({ status: false, messaeg: error.message });
     }
-  }
+  };
 
   async getBlogdetailsbyId(req, res) {
     try {
@@ -96,7 +91,7 @@ class Blog {
       req.flash("error", error.message);
       res.redirect(namedRouter.urlFor("admin.blog.access"));
     }
-  }
+  };
 
   async blogStatusChange(req, res) {
     try {
@@ -117,7 +112,7 @@ class Blog {
     } catch (error) {
       return res.status(500).json({ status: true, message: error.message });
     }
-  }
+  };
 
   async BlogDeleteById(req, res) {
     try {
@@ -200,7 +195,7 @@ class Blog {
 
       if (!updateblogdetails) {
         return res
-          .status(200)
+          .status(400)
           .json({ status: false, message: "Failed to updated blog" });
       }
       return res

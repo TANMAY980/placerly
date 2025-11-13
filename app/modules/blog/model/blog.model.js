@@ -14,7 +14,8 @@ const blogSchema=new Schema({
         updatedAt:{type:Date,default:Date.now}
     }],
     addedby:[{type:Schema.Types.ObjectId,ref:"user"}],
-    isDeleted:{type:Boolean,default:false}
+    isDeleted:{type:Boolean,default:false},
+    
 },{timestamps:true,versionKey:false});
 
 blogSchema.plugin(mongooseAggregatePaginate);

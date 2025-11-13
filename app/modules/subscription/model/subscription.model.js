@@ -1,5 +1,6 @@
 
 const mongoose=require('mongoose');
+const mongooseAggregatePaginate = require('mongoose-aggregate-paginate-v2');
 const{Schema,model}=mongoose;
 
 const subScriptionSchema=new Schema({
@@ -9,10 +10,15 @@ const subScriptionSchema=new Schema({
     Inclusions:{type:String,required:true},
     duration:{type:String,required:true},
     status:{type:String,enum:["active","inactive"],default:"active"},
+    addby:{type:Schema.Types.ObjectId,ref:"user"},
+    updatedInfo:[{
+        updatedfield:[{type:String,default:""}],
+        updatedby:{type:Schema.Types.ObjectId,ref:"user"},
+    }],
     isDeleted:{type:Boolean,default:false},
-    addby:[{type:Schema.Types.ObjectId,ref:"user"}],
-    updatedby:[{type:Schema.Types.ObjectId,ref:"user"}]
 },{timestamps:true,versionKey:false});
+
+subScriptionSchema.plugin(mongooseAggregatePaginate);
 
 const subScriptionmodel=model("subscription",subScriptionSchema);
 module.exports=subScriptionmodel;

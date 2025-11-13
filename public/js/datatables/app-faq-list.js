@@ -1,6 +1,6 @@
 "use strict";
 $(function () {
-  const dtBlogTable = $(".blog-list-table");
+  const dtBlogTable = $(".faq-list-table");
   const statusDropdown = $("#StatusDropdown");
 
   if (dtBlogTable.length) {
@@ -31,7 +31,7 @@ $(function () {
         processing: true,
         serverSide: true,
         ajax: {
-          url: `${window.location.protocol}//${window.location.host}/admin/blog/getall`,
+          url: `${window.location.protocol}//${window.location.host}/admin/faq/getall`,
           method: "POST",
           data: function (d) {
             const selectedValue = statusDropdown.val();
@@ -58,8 +58,7 @@ $(function () {
           },
         },
         columns: [
-          { data: "name", title: "Name" },
-          { data: "title", title: "Title" },
+          { data: "question", title: "Question" },
           { data: "createdAt", title: "Created On" },
           { data: "addedby", title: "Added By" },
           { data: "status", title: "Status" },
@@ -91,20 +90,20 @@ $(function () {
             className: "btn btn-primary",
             attr: {
               "data-toggle": "modal",
-              "data-target": "#addBlogModal",
+              "data-target": "#addFaqModal",
             },
           },
         ],
         language: {
           sLengthMenu: "Show _MENU_ entries",
           search: "Search",
-          searchPlaceholder: "Search Blogs...",
+          searchPlaceholder: "Search Faqs by question...",
           processing: "Loading...",
-          zeroRecords: "No Bolgs Record found!",
+          zeroRecords: "No Faqss Record found!",
         },
         columnDefs: [
           {
-            targets: 2,
+            targets: 1,
             render: function (data) {
               if (!data) return "N/A";
               const dateValue = moment(data, moment.ISO_8601, true);
@@ -114,7 +113,7 @@ $(function () {
             },
           },
           {
-            targets: 4,
+            targets: 3,
             render: function (data) {
               const colorMap = {
                 active: "badge-light-success",
@@ -127,16 +126,16 @@ $(function () {
             },
           },
           {
-            targets: 5,
+            targets: 4,
             render: function (data) {
               return `
-                <button class="btn btn-sm btn-info view-blog" data-id="${data}">
+                <button class="btn btn-sm btn-info view-faq" data-id="${data}">
                   <i class="bi bi-eye"></i> Details
                 </button>
-                <button class="btn btn-sm btn-primary edit-blog" data-id="${data}">
+                <button class="btn btn-sm btn-primary edit-faq" data-id="${data}">
                   <i class="bi bi-pencil"></i> Edit
                 </button>
-                <button class="btn btn-sm btn-danger delete-blog" data-id="${data}">
+                <button class="btn btn-sm btn-danger delete-faq" data-id="${data}">
                   <i class="bi bi-trash"></i>
                 </button>`;
             },
@@ -148,23 +147,24 @@ $(function () {
     //  Reload on dropdown change
     statusDropdown.on("change", () => table.ajax.reload());
 
-    $(document).on("click", ".view-blog", function () {
-      const blogId = $(this).data("id");
-      console.log(blogId);
-      window.location.href = `/admin/blogdetails/${blogId}`;
+    $(document).on("click", ".view-faq", function () {
+      const faqId = $(this).data("id");
+      window.location.href = `/admin/faq/details/${faqId}`;
     });
+
     // Status change modal
     $(document).on("click", ".status-badge", function () {
       const row = $(this).closest("tr");
-      const blogId = row.find(".btn-primary").data("id");
+      const faqId = row.find(".btn-primary").data("id");
+      
       const currentStatus = $(this).text().trim();
-      $("#selectedBlogId").val(blogId);
+      $("#selectedFaqId").val(faqId);
       $("#statusSelect").val(currentStatus);
       $("#statusModal").modal("show");
     });
-
+    //staus update by id 
     $("#confirmStatusChange").on("click", function () {
-      const blogId = $("#selectedBlogId").val();
+      const faqId = $("#selectedFaqId").val();
       const newStatus = $("#statusSelect").val();
       Swal.fire({
         title: "Confirm Status Change?",
@@ -175,7 +175,7 @@ $(function () {
       }).then((result) => {
         if (result.isConfirmed) {
           $.ajax({
-            url: `/admin/blog/statuschange/${blogId}`,
+            url: `/admin/faq/changestatus/${faqId}`,
             method: "PUT",
             contentType: "application/json",
             data: JSON.stringify({ status: newStatus }),
@@ -217,66 +217,51 @@ $(function () {
     });
 
     //Add Blog modal button
-    $(document).on("click", ".addBlogModalBtn", function () {
-      $("#addBlogModal").modal("show");
+    $(document).on("click", ".addFaqModalBtn", function () {
+      $("#addFaqModal").modal("show");
     });
 
     //Add Blog
-    $(document).on("submit", "#addBlogForm", function (e) {
+    $(document).on("submit", "#addFaqForm", function (e) {
       e.preventDefault();
-
-      const formData = new FormData();
-
-      const name = $("#Name").val();
-      const title = $("#Title").val();
-      const description = $("#description").val();
-      const files = $("#coverImage")[0].files;
-
-      formData.append("name", name);
-      formData.append("title", title);
-      formData.append("description", description);
-      for (let i = 0; i < files.length; i++) {
-        formData.append("coverImage", files[i]);
-      }
-
       $.ajax({
-        url: "/admin/blog/create",
+        url: "/admin/faq/create",
         type: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
+        data:{
+    question: $("#question").val(),
+    answer: $("#answer").val()
+  },
         success: function (response) {
-          $("#addBlogModal").modal("hide");
-          $("#addBlogForm")[0].reset();
-          Swal.fire("Created!", "Blog created successfully.", "success");
+          $("#addFaqModal").modal("hide");
+          $("#addFaqForm")[0].reset();
+          Swal.fire("Created!", "Faq created successfully.", "success");
           table.ajax.reload(null, false);
         },
         error: function () {
-          Swal.fire("Error!", "Failed to add blog", "error");
+          Swal.fire("Error!", "Failed to add faq", "error");
         },
       });
     });
 
     //Edit blog
-    $(document).on("click", ".edit-blog", async function () {
-      const blogId = $(this).data("id");
+    $(document).on("click", ".edit-faq", async function () {
+      const faqId = $(this).data("id");
       try {
         $("#loader").show();
 
-        const response = await fetch(`/admin/blog/jsondetails/${blogId}`);
+        const response = await fetch(`/admin/faq/jsondata/${faqId}`);
         const result = await response.json();
 
         if (result.status && result.data) {
-          const blog = result.data;
+          const faq = result.data;
 
-          $("#editBlogId").val(blog._id);
-          $("#BlogName").val(blog.name || "");
-          $("#BlogTitle").val(blog.title || "");
-          $("#Blogdescription").val(blog.description || "");
-          $("#editStatus").val(blog.status || "inactive");
+          $("#editFaqId").val(faq._id);
+          $("#Faqquestion").val(faq.question || "");
+          $("#Faqanswer").val(faq.answer || "");
+          $("#editStatus").val(faq.status || "inactive");
 
           const modal = new bootstrap.Modal(
-            document.getElementById("editBlogModal")
+            document.getElementById("editFaqModal")
           );
           modal.show();
         } else {
@@ -294,62 +279,52 @@ $(function () {
       }
     });
 
-    // Update blog changes
-    $(document).on("click", "#saveBlogChanges", function (e) {
-      e.preventDefault();
+  // Update blog changes
+  $(document).on("click", "#saveFaqChanges", function (e) {
+  e.preventDefault();
+  const faqId = $("#editFaqId").val();
 
-      const blogId = $("#editBlogId").val();
-      const formData = new FormData();
+  const updatedFaq = {
+    question: $("#Faqquestion").val(),
+    answer: $("#Faqanswer").val(),
+    status: $("#editStatus").val(),
+  };
 
-      formData.append("name", $("#BlogName").val());
-      formData.append("title", $("#BlogTitle").val());
-      formData.append("description", $("#Blogdescription").val());
-      formData.append("status", $("#editStatus").val());
-
-      const files = $("#editCoverImage")[0].files;
-
-      if (files.length > 0) {
-        for (let i = 0; i < files.length; i++) {
-          formData.append("coverImage", files[i]);
-        }
-      }
-
-      Swal.fire({
-        title: "Are you sure?",
-        text: "Do you want to update this blog?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, update it!",
-        cancelButtonText: "Cancel",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          $.ajax({
-            url: `/admin/blog/update/${blogId}`,
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-              Swal.fire("Updated!", response.message, "success");
-              $("#editBlogModal").modal("hide");
-              table.ajax.reload(null, false);
-            },
-            error: function (xhr) {
-              Swal.fire(
-                "Error!",
-                xhr.responseJSON?.message || "Failed to update blog",
-                "error"
-              );
-            },
-          });
-        }
+  Swal.fire({
+    title: "Are you sure?",
+    text: "Do you want to update this FAQ?",
+    icon: "warning",
+    showCancelButton: true,
+    cancelButtonText: "Cancel",
+    confirmButtonText: "Yes, update it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: `/admin/faq/update/${faqId}`,
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify(updatedFaq),
+        success: function (response) {
+          Swal.fire("Updated!", response.message, "success");
+          $("#editFaqModal").modal("hide");
+          table.ajax.reload(null, false);
+        },
+        error: function (xhr) {
+          console.error("Error response:", xhr);
+          Swal.fire(
+            "Error!",
+            xhr.responseJSON?.message || "Failed to update FAQ",
+            "error"
+          );
+        },
       });
-    });
-
-    //Delete blog
-
-    $(document).on("click", ".delete-blog", function () {
-      const blogId = $(this).data("id");
+    }
+  });
+});
+ 
+    //Delete faq
+    $(document).on("click", ".delete-faq", function () {  
+      const faqId = $(this).data("id");
       Swal.fire({
         title: "Are you sure?",
         text: "You will not be able to recover this blog!",
@@ -359,14 +334,14 @@ $(function () {
       }).then((result) => {
         if (result.isConfirmed) {
           $.ajax({
-            url: `/admin/blog/delete/${blogId}`,
+            url: `/admin/faq/delete/${faqId}`,
             method: "DELETE",
             success: function () {
-              Swal.fire("Deleted!", "Blog has been deleted.", "success");
+              Swal.fire("Deleted!", "Faq has been deleted.", "success");
               table.ajax.reload(null, false);
             },
             error: function () {
-              Swal.fire("Error!", "Failed to delete blog.", "error");
+              Swal.fire("Error!", "Failed to delete faq.", "error");
             },
           });
         }

@@ -60,10 +60,12 @@
                         <div class="container-fluid">
                             <div class="row mb-3 align-items-center justify-content-between">
                                 <div class="col-sm-6">
-                                    <h3 class="m-0">Blog Details</h3>
+                                    <h3 class="m-0">
+                                        <%=page_name%>
+                                    </h3>
                                 </div>
                                 <div class="col-sm-6 text-end">
-                                    <a href="<%=generateUrl('admin.blog.access')%>" class="btn btn-outline-primary">
+                                    <a href="<%=generateUrl('admin.faq.access')%>" class="btn btn-outline-primary">
                                         <i class="fas fa-arrow-left me-1"></i>
                                     </a>
                                 </div>
@@ -78,47 +80,28 @@
                     <body>
                         <div class="blog-container">
 
-                            <h1 class="blog-title text-center ">
-                                <%= response.title %>
-                            </h1>
                             <p class="blog-meta">
                                 <strong>Added by:</strong>
                                 <%= response.addedby?.[0]?.name || 'Admin' %> |
                                     <strong>Date:</strong>
-                                    <%= response.createdAt ? new Date(response.createdAt).toLocaleString() : '' %>  |
-                                        <strong>Status:</strong>
+                                    <%= response.createdAt ? new Date(response.createdAt).toLocaleString() : '' %>
+
+                                        <strong>Status:</strong> |
                                         <span
                                             class="badge <%= response.status === 'active' ? 'bg-success' : 'bg-secondary' %>">
                                             <%= response.status %>
                                         </span>
                             </p>
 
-                            <!-- Blog Image Gallery -->
-                            <div class="cover-gallery">
-                                <% if (response.coverImage && response.coverImage.length> 0) { %>
-                                    <% response.coverImage.forEach(img=> { %>
-                                        <img src="<%= img %>" alt="Blog Cover Image" />
-                                        <% }) %>
-                                            <% } else { %>
-                                                <img src="https://via.placeholder.com/800x400?text=No+Image+Available"
-                                                    alt="Placeholder" />
-                                                <% } %>
-                            </div>
+                            <h1 class="blog-title text-center ">
+                                <%= response.question %>
+                            </h1>
 
                             <!-- Blog Description -->
                             <div class="blog-description">
-                                <%= response.description %>
+                                <%= response.answer %>
                             </div>
 
-                            <!-- Author Section -->
-                            <div class="author-info">
-                                <div>
-                                    <h6>
-                                        <%= response.addedby?.[0]?.name || 'Unknown Author' %>
-                                    </h6>
-                                    <span>Blog Author</span>
-                                </div>
-                            </div>
 
                             <% if (response.updatedInfo && response.updatedInfo.length> 0) { %>
                                 <div class="update-history mt-5">
