@@ -1,6 +1,7 @@
 const blogRepository = require("../repository/blog.repository");
 const mongoose = require("mongoose");
 class Blog {
+  
   async list(req, res) {
     try {
       const [total, active, inactive] = await Promise.all([

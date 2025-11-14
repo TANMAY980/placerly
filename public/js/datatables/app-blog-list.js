@@ -148,6 +148,7 @@ $(function () {
     //  Reload on dropdown change
     statusDropdown.on("change", () => table.ajax.reload());
 
+    //details modal
     $(document).on("click", ".view-blog", function () {
       const blogId = $(this).data("id");
       console.log(blogId);
@@ -347,7 +348,6 @@ $(function () {
     });
 
     //Delete blog
-
     $(document).on("click", ".delete-blog", function () {
       const blogId = $(this).data("id");
       Swal.fire({
