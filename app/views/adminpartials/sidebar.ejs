@@ -1,6 +1,6 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="<%=generateUrl('admin.dashboard.access')%>" class="brand-link">
       <img src="/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">Placerly Admin</span>
     </a>
@@ -34,9 +34,9 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="nav-item">
+          <li class="nav-item <%= page_name === 'user details' ? 'menu-open' : '' %>">
             <a href="" class="nav-link active">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="fa-regular fa-user"></i>
               <p>
                 User Manage
                 <i class="right fas fa-angle-left"></i>
@@ -52,7 +52,7 @@
             </ul>
           </li>
           <li class="nav-item <%= page_name === 'cms-management' ? 'menu-open' : '' %>">
-            <a href="#" class="nav-link <%= page_name === 'cms-management' ? 'active' : '' %>">
+            <a href=""class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Cms Manage
@@ -61,21 +61,15 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="/cms/all" class="nav-link <%= page_title === 'All Cms' ? 'active' : '' %>">
+                <a href="">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>All Cms</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="/cms/add" class="nav-link <%= page_title === 'Add Cms' ? 'active' : '' %>">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Add Cms</p>
+                  <p>Cms list</p>
                 </a>
               </li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link active">
+          <li class="nav-item <%= page_name === 'Subscription Plan List' ? 'menu-open' : '' %>">
+            <a href="" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Subscription Manage
@@ -84,21 +78,15 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="./index.html" class="nav-link">
+                <a href="<%=generateUrl('admin.subscription.access')%>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>All Subscription Plans</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="./index2.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Add Subscription Plan</p>
+                  <p> Subscription Plan List</p>
                 </a>
               </li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link active">
+          <li class="nav-item <%= page_name === 'Query Support List' ? 'menu-open' : '' %>">
+            <a href="" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Support Manage
@@ -109,13 +97,13 @@
               <li class="nav-item">
                 <a href="<%=generateUrl('admin.queries.access')%>" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Support Query list</p>
+                  <p>Query Support list</p>
                 </a>
               </li>
             </ul>
           </li>
           <li class="nav-item <%= page_name === 'faq-management' ? 'menu-open' : '' %>">
-            <a href="#" class="nav-link active">
+            <a href="" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Faq Manage
@@ -131,8 +119,8 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link active">
+          <li class="nav-item <%= page_name === 'Blog List' ? 'menu-open' : '' %>">
+            <a href="" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Blog Manage

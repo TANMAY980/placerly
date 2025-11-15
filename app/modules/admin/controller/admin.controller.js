@@ -1,11 +1,11 @@
 const adminRepository=require('../repository/admin.repository');
 
 class Admin{
-    async admin_dashboard(req,res){
+    async dashboard(req,res){
         try {
             res.render("admin/views/dashboard",{
-                page_name:"admin dasboard",
-                page_title:"Admin TITLE"
+                page_name:"Admin dashboard",
+                page_title:"Admin dashboard"
             });
         } catch (error) {
             console.log(error);

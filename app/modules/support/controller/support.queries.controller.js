@@ -18,7 +18,7 @@ class supportquery{
 
             ]);
             res.render("support/views/list.ejs",{
-                page_name:"Support-management",
+                page_name:"Query Support List",
                 page_title:"Query Support",
                 stats:{total,inactive,active,pending,processing,resolved,low,high,medium}
             })
@@ -68,7 +68,7 @@ class supportquery{
       }
       res.render("support/views/details",{
         page_title:"Query Details",
-        page_name:"Queries Details",
+        page_name:"Query Details",
         response:data,
       })
       }catch(error){

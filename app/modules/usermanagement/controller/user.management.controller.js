@@ -7,14 +7,7 @@ class usermanagement{
 
     async list(req, res) {
         try {
-            const [
-                total,
-                active,
-                inactive,
-                banned,
-                subscribed,
-                unsubscribed
-            ] = await Promise.all([
+            const [total,active,inactive,banned,subscribed,unsubscribed] = await Promise.all([
                 userManagementRepostiory.getCountByParam({ isDeleted: false }),
                 userManagementRepostiory.getCountByParam({ status: 'active', isDeleted: false }),
                 userManagementRepostiory.getCountByParam({ status: 'inactive', isDeleted: false }),
@@ -22,9 +15,8 @@ class usermanagement{
                 userManagementRepostiory.getCountByParam({ subscribed: true, isDeleted: false }),
                 userManagementRepostiory.getCountByParam({ subscribed: false, isDeleted: false }),
             ]);
-
-            
-            res.render('usermanagement/views/userlist.ejs', {
+ 
+            res.render('usermanagement/views/list', {
                 page_name: 'user-management',
                 page_title: 'User List',
                 user: req.user,
@@ -73,8 +65,8 @@ class usermanagement{
                 return res.redirect("admin.user.access")
             }
             res.render("usermanagement/views/details",{
-                page_name:"user-details-management",
-                page_title:"USER Details",
+                page_name:"user details ",
+                page_title:"User details",
                 response:data
 
             })

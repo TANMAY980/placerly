@@ -5,9 +5,9 @@ const{Schema,model}=mongoose;
 
 const subScriptionSchema=new Schema({
     name:{type:String,required:true,index:true},
-    details:{type:String,required:true,default:""},
+    details:{type:String,required:true},
     charges:{type:Number,required:true},
-    Inclusions:{type:String,required:true},
+    inclusions:{type:String,required:true},
     duration:{type:String,required:true},
     status:{type:String,enum:["active","inactive"],default:"active"},
     addedby:[{type:Schema.Types.ObjectId,ref:"user"}],

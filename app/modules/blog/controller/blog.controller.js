@@ -11,7 +11,7 @@ class Blog {
       ]);
 
       res.render("blog/views/list.ejs", {
-        page_name: "blog-list",
+        page_name: "Blog List",
         page_title: "Blog List",
         stats: { total, active, inactive },
       });
@@ -119,14 +119,8 @@ class Blog {
     try {
       const blogId = new mongoose.Types.ObjectId(req.params.id);
       const blogdata = await blogRepository.deleteById(blogId);
-      if (!blogdata) {
-        return res
-          .status(400)
-          .json({ status: false, message: "Failed to delete blog" });
-      }
-      return res
-        .status(200)
-        .json({ status: true, message: "Blog Deleted Successfully" });
+      if (!blogdata) return res.status(400).json({ status: false, message: "Failed to delete blog" });
+      return res.status(200).json({ status: true, message: "Blog Deleted Successfully" });
     } catch (error) {
       return res.status(500).json({ status: false, message: error.message });
     }
@@ -137,18 +131,9 @@ class Blog {
       const blogdata = await blogRepository.getblogdetails({
         _id: new mongoose.Types.ObjectId(req.params.id),
       });
-      if (!blogdata) {
-        return res
-          .status(400)
-          .json({ status: false, message: "Failed to fetch blog details" });
+      if (!blogdata) {return res.status(400).json({ status: false, message: "Failed to fetch blog details" });
       }
-      return res
-        .status(200)
-        .json({
-          status: true,
-          message: "Blog Details Fetched successfully",
-          data: blogdata,
-        });
+      return res.status(200).json({status: true,message: "Blog Details Fetched successfully",data: blogdata,});
     } catch (error) {
       return res.status(500).json({ status: false, message: error.message });
     }
@@ -157,51 +142,46 @@ class Blog {
   async updateBlog(req, res) {
     try {
       const { name, title, description, status } = req.body;
-      const blogId=req.params.id;
+      const blogId = req.params.id;
+      const existingBlog = await blogRepository.getById(blogId);
+      const updatedFields = [];
+      if (name && name !== existingBlog.name) updatedFields.push("name");
+      if (title && title !== existingBlog.title) updatedFields.push("title");
+      if (description && description !== existingBlog.description)
+        updatedFields.push("description");
+      if (status && status !== existingBlog.status)
+        updatedFields.push("status");
 
-    const existingBlog= await blogRepository.getById(blogId);
-    const updatedFields=[];
-    if (name && name !== existingBlog.name) updatedFields.push("name");
-    if (title && title !== existingBlog.title) updatedFields.push("title");
-    if (description && description !== existingBlog.description) updatedFields.push("description");
-    if (status && status !== existingBlog.status) updatedFields.push("status");
-
-    
-    const updateOps = {
-      $set: { name, title, description, status },
-    };
-
-    if (updatedFields.length > 0) {
-      updateOps.$push = {
-        updatedInfo: {
-          updatedfield: updatedFields,
-          updatedby: req.user ? req.user._id : null,
-          updatedAt: new Date()
-        }
+      const updateOps = {
+        $set: { name, title, description, status },
       };
-    }
-    
-      if (req.files && req.files.length > 0) {
-      const newImages = req.files.map((file) => file.path);
 
-      blog.coverImage = Array.isArray(blog.coverImage)
-        ? [...blog.coverImage, ...newImages]
-        : newImages;
-    };
-     
+      if (updatedFields.length > 0) {
+        updateOps.$push = {
+          updatedInfo: {
+            updatedfield: updatedFields,
+            updatedby: req.user ? req.user._id : null,
+            updatedAt: new Date(),
+          },
+        };
+      }
+
+      if (req.files && req.files.length > 0) {
+        const newImages = req.files.map((file) => file.path);
+
+        blog.coverImage = Array.isArray(blog.coverImage)
+          ? [...blog.coverImage, ...newImages]
+          : newImages;
+      }
 
       const updateblogdetails = await blogRepository.updateByField(updateOps, {
         _id: req.params.id,
       });
 
       if (!updateblogdetails) {
-        return res
-          .status(400)
-          .json({ status: false, message: "Failed to updated blog" });
+        return res.status(400).json({ status: false, message: "Failed to updated blog" });
       }
-      return res
-        .status(200)
-        .json({ status: true, message: "updated blog successfully" });
+      return res.status(200).json({ status: true, message: "updated blog successfully" });
     } catch (error) {
       req.flash("error", error.message);
       return res.status(500).json({ status: false, message: error.message });
