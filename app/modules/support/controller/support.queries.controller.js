@@ -84,15 +84,15 @@ class supportquery{
 
         const checkstatus=await queriesRepository.getById(queryId);
         const updatedFields=[];
-        if(checkstatus && checkstatus!==checkstatus.status)updatedFields.push(`status:${status}`);
+        if(checkstatus && checkstatus!==status)updatedFields.push(`status:${status}`);
 
         const updateOps={
           $set:{status}
         };
-        if(updatedFields){
+        if(updatedFields.length){
           updateOps.$push={
             updateInfo:{
-                pdatedfield:updatedFields,
+                updatedfield:updatedFields,
                 updatedby: req.user?req.user._id:null,
                 updatedAt:new Date()
               }
@@ -103,7 +103,7 @@ class supportquery{
         if(!statusdata) return res.status(400).json({status:false,message:"Failed To Change Qury status"});
         return res.status(200).json({status:true,message:"Queries Status changed Successfully"})
       }catch(error){
-        return res.status(500).json({ status: true, message: error.message });
+        return res.status(500).json({ status: false, message: error.message });
       }
     };
 
@@ -122,7 +122,7 @@ class supportquery{
         if(updatedFields.length){
           updateOps.$push={
               updateInfo:{
-                pdatedfield:updatedFields,
+                updatedfield:updatedFields,
                 updatedby: req.user?req.user._id:null,
                 updatedAt:new Date()
               }

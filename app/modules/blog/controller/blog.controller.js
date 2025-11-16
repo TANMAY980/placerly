@@ -76,9 +76,7 @@ class Blog {
 
   async getBlogdetailsbyId(req, res) {
     try {
-      const data = await blogRepository.getblogdetails({
-        _id: new mongoose.Types.ObjectId(req.params.id),
-      });
+      const data = await blogRepository.getblogdetails({_id: new mongoose.Types.ObjectId(req.params.id)});
       if (!data) {
         req.falsh("error", "Blog details not found");
         return res.redirect("admin.blog.access");
@@ -88,9 +86,10 @@ class Blog {
         page_title: "Blog Details",
         response: data,
       });
+      
     } catch (error) {
       req.flash("error", error.message);
-      res.redirect(namedRouter.urlFor("admin.blog.access"));
+      return res.redirect(generateUrl("admin.blog.access"));
     }
   };
 
@@ -112,17 +111,6 @@ class Blog {
         .json({ status: true, message: "Successfully updated blog status" });
     } catch (error) {
       return res.status(500).json({ status: true, message: error.message });
-    }
-  };
-
-  async BlogDeleteById(req, res) {
-    try {
-      const blogId = new mongoose.Types.ObjectId(req.params.id);
-      const blogdata = await blogRepository.deleteById(blogId);
-      if (!blogdata) return res.status(400).json({ status: false, message: "Failed to delete blog" });
-      return res.status(200).json({ status: true, message: "Blog Deleted Successfully" });
-    } catch (error) {
-      return res.status(500).json({ status: false, message: error.message });
     }
   };
 
@@ -187,5 +175,18 @@ class Blog {
       return res.status(500).json({ status: false, message: error.message });
     }
   };
+
+  async BlogDeleteById(req, res) {
+    try {
+      const blogId = new mongoose.Types.ObjectId(req.params.id);
+      const blogdata = await blogRepository.deleteById(blogId);
+      if (!blogdata) return res.status(400).json({ status: false, message: "Failed to delete blog" });
+      return res.status(200).json({ status: true, message: "Blog Deleted Successfully" });
+    } catch (error) {
+      return res.status(500).json({ status: false, message: error.message });
+    }
+  };
+
+  
 }
 module.exports = new Blog();

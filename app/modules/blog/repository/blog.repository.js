@@ -18,12 +18,14 @@ class blogRepository extends baseRepository{
           // Search Filter
           if (_.isObject(req.body.search) && _.has(req.body.search, "value")) {
             let searchValue = req.body.search.value.trim().replace("+", "");
-            and_clauses.push({
+            if(searchValue !==" "){
+              and_clauses.push({
               $or: [
                 { name: { $regex: searchValue, $options: "i" } },
                 { Title: { $regex: searchValue, $options: "i" } },
               ],
             });
+            } 
           }
     
           // Date Filter
@@ -114,12 +116,11 @@ class blogRepository extends baseRepository{
           },
         },
       ]);
-
       return data.length ? data[0] : null; 
       
     } catch (error) {
       throw error
     }
-  }
+  };
 };
 module.exports=new blogRepository();

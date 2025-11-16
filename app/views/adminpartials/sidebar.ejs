@@ -36,7 +36,7 @@
                with font-awesome or any other icon font library -->
           <li class="nav-item <%= page_name === 'user details' ? 'menu-open' : '' %>">
             <a href="" class="nav-link active">
-              <i class="fa-regular fa-user"></i>
+              <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 User Manage
                 <i class="right fas fa-angle-left"></i>
@@ -51,8 +51,9 @@
               </li>
             </ul>
           </li>
+
           <li class="nav-item <%= page_name === 'cms-management' ? 'menu-open' : '' %>">
-            <a href=""class="nav-link active">
+            <a href="" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Cms Manage
@@ -61,13 +62,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="">
+                <a href="<%=generateUrl('admin.cms.access')%>"class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Cms list</p>
+                  <p>Cms List</p>
                 </a>
               </li>
             </ul>
-          </li>
+          </li> 
           <li class="nav-item <%= page_name === 'Subscription Plan List' ? 'menu-open' : '' %>">
             <a href="" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
