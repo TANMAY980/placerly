@@ -2,19 +2,18 @@ const express=require('express');
 const dotenv=require('dotenv');
 const bodyParser=require('body-parser');
 const session=require('express-session');
+const RedisStore = require("connect-redis")(session);
+const redisClient = require("./app/config/redis.config");
 const path=require('path');
 const{resolve,join}=require('path');
 const ejs=require('ejs');
 const cors=require('cors');
 const flash=require('connect-flash');
 const passport=require('passport');
-const RedisStore = require("connect-redis");
-const Redis = require("ioredis");
-const {swaggerui,swaggerSpec}=require('./app/helper/swagger')
-const authRoutes=require('./app/routes/api/authentication.routes');
-const userRoutes=require('./app/routes/api/user.routes')
+const {swaggerui,swaggerSpec}=require('./app/helper/swagger');
+const authentication=require("./app/middleware/auth");
 
-dotenv.config();
+dotenv.config({quiet: true});
 
 const appConfig=require(resolve(join(__dirname,"./app/config","index")));
 const utils=require(resolve(join(__dirname,"./app/helper","utils")));
@@ -26,24 +25,22 @@ app.use(cors({
     methods:["GET","PUT","POST","DELETE","PATCH"],
     credentials:true
 }));
+
+
+app.use(
+  session({
+    store: new RedisStore({ client: redisClient }),
+    secret: process.env.SESSION_SECRET || "your-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false,
+      maxAge: 1000 * 60 * 60,
+    },
+  })
+);
+
 app.use(flash());
-app.use(session({ secret: 'delivery@&beverage@#', resave: true, saveUninitialized: true }));
-
-// app.use(
-//   session({
-//     store: RedisStore,
-//     secret: process.env.SESSION_SECRET || "supersecretkey",
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: {
-//       secure: false, 
-//       httpOnly: true, 
-//       maxAge: 1000 * 60 * 60 * 24, 
-//     },
-//   })
-// );
-
-
 
 
 const getProtocol=appConfig.appRoot.protocol;
@@ -63,8 +60,11 @@ app.use(bodyParser.urlencoded({limit: "50mb",extended:true,parameterLimit:50000}
 app.use(bodyParser.json({limit:"50mb"}));
 app.use(express.static("./public"));
 
-app.use(passport.initialize())
+app.use(passport.initialize());
+authentication.jwtauth();
 
+const authRoutes=require('./app/routes/api/authentication.routes');
+const userRoutes=require('./app/routes/api/user.routes');
 app.use("/api",[authRoutes,userRoutes]);
 app.use("/api-docs",swaggerui.serve,swaggerui.setup(swaggerSpec));
 

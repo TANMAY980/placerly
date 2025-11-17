@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ quiet: true });
 const nodemailer=require('nodemailer');
 let transporter=nodemailer.createTransport({
     host:process.env.EMAIL_HOST,

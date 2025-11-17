@@ -1,6 +1,6 @@
 const bcrypt=require('bcryptjs');
 const userRepository=require('../modules/user/repository/user.repostiroy')
-const {Strategy:JwtStrategy,ExtractJwt}=require('passport-jwt');
+const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 const passport = require('passport');
 
 
@@ -30,7 +30,7 @@ class authentication{
         try {
             const opts={
                 jwtFromRequest:ExtractJwt.fromAuthHeaderAsBearerToken(),
-                secretOrKey:process.env.JWT_SECRET,
+                secretOrKey:process.env.JWT_SECRET_KEY,
             }
             passport.use(new JwtStrategy(opts,async(jwt_payload,done)=>{
                 try {
@@ -41,11 +41,9 @@ class authentication{
                     return done(err, false);
                 }
                 
-            }))
+            }));
         } catch (error) {
-            console.log(error);
-            return res.status(500).json({status:false,message:error.message})
-            
+            console.log(error);   
         }
     };
 
@@ -66,26 +64,55 @@ class authentication{
 
     async isUser(req,res,next){
         try {
-            if(req.user && req.user.role==="user"){
-                return next();
-            }
-            return res.status(403).json({status:false,message:"Access denied.User only route"})
-        } catch (error) {
-            console.log(error);  
-            return res.status(500).json({status:false,message:error.message})       
+        if (!req.user) {
+            return res.status(401).json({
+            status: false,
+            message: "Unauthorized. No user found.",
+            });
         }
-    }
 
-    async isAdmin(req,res,next){
-        try {
-            if(req.user && req.user.role==="admin"){
+        if (req.user.role === "user") {
             return next();
         }
-        return res.status(403).json({status:false,message:"Access denied.Admin only routes"})
+
+        return res.status(403).json({
+            status: false,
+            message: "Access denied. Users only routes",
+        });
         } catch (error) {
-            console.log(error);
-            return res.status(500).json({status:false,message:error.message})
+        console.error(error);
+        return res.status(500).json({
+            status: false,
+            message: error.message,
+        });
         }
-    }
+    };
+
+    async isAdmin(req, res, next) {
+        try {
+        if (!req.user) {
+            return res.status(401).json({
+            status: false,
+            message: "Unauthorized. No user found.",
+            });
+        }
+
+        if (req.user.role === "admin") {
+            return next();
+        }
+
+        return res.status(403).json({
+            status: false,
+            message: "Access denied. Admin only routes",
+        });
+        } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            status: false,
+            message: error.message,
+        });
+        }
+    };
+
 }
 module.exports=new authentication()
