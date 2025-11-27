@@ -1,6 +1,7 @@
 const mailtransporter=require('../config/email.config');
 const otpmodel=require('../modules/user/model/otp.model');
 const userRepostiroy = require('../modules/user/repository/user.repostiroy');
+
 class Email{
     async SendRegistraionEmail(req,res,user){
         try {
@@ -10,6 +11,22 @@ class Email{
                 subject:"user Registraion",
                 html:`<p> Dear ${user.firstName},welcome to Placerly</p>
                 <p> your registraion successfull`
+                
+            })
+        } catch (error) {
+            console.log(error);
+      return res.status(500).send("Internal Server Error");
+        }
+    };
+
+    async SendInactiveEmail(req,res,user){
+        try {
+            const sendmail=await mailtransporter.sendMail({
+                from:process.env.EMAIL_FROM,
+                to:user.email,
+                subject:"user Inactive",
+                html:`<p> Dear ${user.firstName},welcome to Placerly</p>
+                <p> your account is inactive please login after verify your email </P>`
                 
             })
         } catch (error) {

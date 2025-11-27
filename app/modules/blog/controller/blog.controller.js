@@ -9,12 +9,14 @@ class Blog {
         blogRepository.getCountByParam({ status: "active", isDeleted: false }),
         blogRepository.getCountByParam({status: "inactive",isDeleted: false}),
       ]);
-
       res.render("blog/views/list.ejs", {
         page_name: "Blog List",
         page_title: "Blog List",
         stats: { total, active, inactive },
+        user:req.user
       });
+      console.log(req.user);
+      
     } catch (error) {
       console.log(error);
       req.flash("error", error.message);

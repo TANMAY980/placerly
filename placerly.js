@@ -2,16 +2,17 @@ const express=require('express');
 const dotenv=require('dotenv');
 const bodyParser=require('body-parser');
 const session=require('express-session');
-const RedisStore = require("connect-redis")(session);
-const redisClient = require("./app/config/redis.config");
+// const RedisStore = require("connect-redis").default;
+// const redisClient = require("./app/config/redis.config");
+const cookieParser=require('cookie-parser');
 const path=require('path');
 const{resolve,join}=require('path');
 const ejs=require('ejs');
 const cors=require('cors');
 const flash=require('connect-flash');
-const passport=require('passport');
+// const passport=require('passport');
 const {swaggerui,swaggerSpec}=require('./app/helper/swagger');
-const authentication=require("./app/middleware/auth");
+const authentication=require("./app/middleware/passport.auth");
 
 dotenv.config({quiet: true});
 
@@ -26,22 +27,46 @@ app.use(cors({
     credentials:true
 }));
 
+app.use(cookieParser());
+
+
+//use redisStore for session storage 
+
+// app.use(
+//   session({
+//     store: new RedisStore({ client: redisClient }),
+//     secret: process.env.SESSION_SECRET || "secret",
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {
+//       secure: false,
+//       maxAge: 1000 * 60 * 60
+//     }
+//   })
+// );
+
 
 app.use(
   session({
-    store: new RedisStore({ client: redisClient }),
-    secret: process.env.SESSION_SECRET || "your-secret",
+    secret: process.env.SESSION_SECRET_KEY ||"yourSecretKey",
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      secure: false,
-      maxAge: 1000 * 60 * 60,
-    },
   })
 );
 
 app.use(flash());
 
+
+app.use((req, res, next) => {
+  res.locals.successMessage = req.flash("success");
+  res.locals.errorMessage = req.flash("error");
+  next();
+});
+
+//for passport-jwt
+
+// app.use(passport.initialize());
+// authentication.jwtauth();
 
 const getProtocol=appConfig.appRoot.protocol;
 const getHost=appConfig.appRoot.host;
@@ -60,11 +85,10 @@ app.use(bodyParser.urlencoded({limit: "50mb",extended:true,parameterLimit:50000}
 app.use(bodyParser.json({limit:"50mb"}));
 app.use(express.static("./public"));
 
-app.use(passport.initialize());
-authentication.jwtauth();
 
 const authRoutes=require('./app/routes/api/authentication.routes');
 const userRoutes=require('./app/routes/api/user.routes');
+
 app.use("/api",[authRoutes,userRoutes]);
 app.use("/api-docs",swaggerui.serve,swaggerui.setup(swaggerSpec));
 
@@ -77,16 +101,26 @@ app.use("/api-docs",swaggerui.serve,swaggerui.setup(swaggerSpec));
         const adminApiFiles=await utils._readdir(`./app/routes/${getAdminFolderName}`);
         adminApiFiles.forEach((file)=>{
             if(!file || file[0] == ".") return;
-            namedRouter.use('',require(join(__dirname,file)));
+            namedRouter.use('/',require(join(__dirname, file)));
         });
         
         const userApiFiles=await utils._readdir(`./app/routes/${getUserFolderName}`);
         userApiFiles.forEach((file)=>{
             if(!file || file[0]=='.')return;
             namedRouter.use("/",require(join(__dirname,file)));
+            
         });
 
         namedRouter.buildRouteTable();
+
+        app.use((req, res) => {
+            return res.status(404).render("user/views/no-access.ejs", {
+            page_name: "No Access",
+            page_title: "No Access",
+            user: req.user || null,
+            });
+        });
+
 
         if (!isProduction && process.env.SHOW_NAMED_ROUTES === "true") {
             const adminRouteList = namedRouter.getRouteTable("/admin");

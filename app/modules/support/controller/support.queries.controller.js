@@ -72,7 +72,7 @@ class supportquery{
         response:data,
       })
       }catch(error){
-         req.flash("error", error.message);
+        req.flash("error", error.message);
         res.redirect(namedRouter.urlFor("admin.queries.access"));
       }
     };

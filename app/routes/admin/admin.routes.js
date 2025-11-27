@@ -6,7 +6,9 @@ const auth=require("../../middleware/auth");
 const namedRouter=routelabel(router);
 
 
-namedRouter.get("admin.dashboard.access","/admin/dashboard",adminController.dashboard);
+
+namedRouter.get("admin.dashboard.access", "/admin/dashboard",auth.jwtauth, auth.isAdmin,adminController.dashboard);
+
 
 
 module.exports=router;

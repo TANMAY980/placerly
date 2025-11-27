@@ -30,12 +30,8 @@ class blogRepository extends baseRepository{
     
           // Date Filter
           if (req.body.startDate && req.body.endDate) {
-            let startDate = moment(req.body.startDate, "YYYY-MM-DD")
-              .startOf("day")
-              .toDate();
-            let endDate = moment(req.body.endDate, "YYYY-MM-DD")
-              .endOf("day")
-              .toDate();
+            let startDate = moment(req.body.startDate, "YYYY-MM-DD").startOf("day").toDate();
+            let endDate = moment(req.body.endDate, "YYYY-MM-DD").endOf("day").toDate();
             and_clauses.push({ createdAt: { $gte: startDate, $lte: endDate } });
           }
     

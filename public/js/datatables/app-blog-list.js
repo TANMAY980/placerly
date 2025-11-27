@@ -241,7 +241,7 @@ $(function () {
       }
 
       $.ajax({
-        url: "/admin/blog/create",
+        url: "/blog/create",
         type: "POST",
         data: formData,
         processData: false,

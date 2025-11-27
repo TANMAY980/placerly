@@ -19,7 +19,7 @@ class cmsRepository extends baseRepository{
           // Search Filter
           if (_.isObject(req.body.search) && _.has(req.body.search, "value")) {
             let searchValue = req.body.search.value.trim().replace("+", "");
-            if(searchValue !==""){
+            if(searchValue !==" "){
               and_clauses.push({
               $or: [
                 { title: { $regex: searchValue, $options: "i" } },

@@ -252,6 +252,6 @@ router.post("/verifyemail",authcontroller.verify_email)
  *         description: Internal server error.
  */
 
-router.post("/updatepassword/:id",auth.user_authenticate,authcontroller.update_password)
+router.post("/updatepassword/:id",auth.jwtauth,authcontroller.update_password)
 
 module.exports = router;

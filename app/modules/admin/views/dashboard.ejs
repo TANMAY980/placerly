@@ -7,8 +7,8 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
@@ -29,6 +29,7 @@
   <link rel="stylesheet" href="/plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
   <link rel="stylesheet" href="/plugins/summernote/summernote-bs4.min.css">
+  <link rel="stylesheet" href="/app-assets/css/pages/flash.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -48,6 +49,30 @@
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
+    <!-- Display Error or success message Message -->
+        <div class="d-flex justify-content-center">
+          <div style="width: 300px">
+            <!-- Display success message if available -->
+            <% if (successMessage.length> 0) { %>
+              <div class="toast-message toast-success">
+                <span>
+                  <%= successMessage[0] %>
+                </span>
+                <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+              </div>
+              <% } %>
+            
+                <% if (errorMessage.length> 0) { %>
+                  <div class="toast-message toast-error">
+                    <span>
+                      <%= errorMessage[0] %>
+                    </span>
+                    <button onclick="this.parentElement.remove()">✖</button>
+                  </div>
+                  <% } %>
+
+          </div>
+        </div>
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
@@ -175,5 +200,6 @@
 <script src="/dist/js/demo.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="/dist/js/pages/dashboard.js"></script>
+<script src="/js/flash.js"></script>
 </body>
 </html>

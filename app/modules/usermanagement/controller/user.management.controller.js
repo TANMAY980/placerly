@@ -10,7 +10,7 @@ class usermanagement{
             const [total,active,inactive,banned,subscribed,unsubscribed] = await Promise.all([
                 userManagementRepostiory.getCountByParam({ isDeleted: false }),
                 userManagementRepostiory.getCountByParam({ status: 'active', isDeleted: false }),
-                userManagementRepostiory.getCountByParam({ status: 'inactive', isDeleted: false }),
+                userManagementRepostiory.getCountByParam({ status: 'inactive',isDeleted: false }),
                 userManagementRepostiory.getCountByParam({ status: 'banned', isDeleted: false }),
                 userManagementRepostiory.getCountByParam({ subscribed: true, isDeleted: false }),
                 userManagementRepostiory.getCountByParam({ subscribed: false, isDeleted: false }),
@@ -67,7 +67,7 @@ class usermanagement{
             res.render("usermanagement/views/details",{
                 page_name:"user details ",
                 page_title:"User details",
-                response:data
+                response:data,
 
             })
         } catch (error) {

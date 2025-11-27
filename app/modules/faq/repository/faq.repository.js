@@ -18,21 +18,19 @@ class faqRepository extends baseRepository{
           // Search Filter
           if (_.isObject(req.body.search) && _.has(req.body.search, "value")) {
             let searchValue = req.body.search.value.trim().replace("+", "");
-            and_clauses.push({
+            if(searchValue !=" "){
+              and_clauses.push({
               $or: [
                 { question: { $regex: searchValue, $options: "i" } },
               ],
             });
+            }
           }
     
           // Date Filter
           if (req.body.startDate && req.body.endDate) {
-            let startDate = moment(req.body.startDate, "YYYY-MM-DD")
-              .startOf("day")
-              .toDate();
-            let endDate = moment(req.body.endDate, "YYYY-MM-DD")
-              .endOf("day")
-              .toDate();
+            let startDate = moment(req.body.startDate, "YYYY-MM-DD").startOf("day").toDate();
+            let endDate = moment(req.body.endDate, "YYYY-MM-DD").endOf("day").toDate();
             and_clauses.push({ createdAt: { $gte: startDate, $lte: endDate } });
           }
     

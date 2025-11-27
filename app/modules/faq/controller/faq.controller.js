@@ -37,16 +37,10 @@ class faq {
         recordsFiltered: datas.totalDocs || 0,
         data: datas.docs || [],
       };
-      return res.status(200).json({
-        status: 200,
-        data: data,
-        message: `Data fetched successfully.`,
-      });
+      return res.status(200).json({status: 200,data: data,message: `Data fetched successfully.`});
     } catch (error) {
       console.error("Error in Blog Controller:", e.message);
-      return res
-        .status(500)
-        .json({ status: 500, data: [], message: e.message });
+      return res.status(500).json({ status: 500, data: [], message: e.message });
     }
   };
 
