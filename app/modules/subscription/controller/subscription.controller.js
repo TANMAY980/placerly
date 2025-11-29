@@ -13,7 +13,8 @@ class subscription{
             res.render("subscription/views/list",{
                 page_name:"Subscription Plan List",
                 page_title:"Subscription plan manage",
-                stats:{total,active,inactive}
+                stats:{total,active,inactive},
+                user:req.user
             })
         } catch (error) {
             console.log(error);
@@ -54,7 +55,7 @@ class subscription{
         const check=await subscriptionRepository.getByField({name});
         if(check) return res.status(409).json({status:false,messaeg:"Subscription plan already exists"});
 
-        const plan={name,charges:Number(charges),inclusions,details,duration};
+        const plan={name,charges:Number(charges),inclusions,details,duration,addedby:req.user.id};
         const subsdata=await subscriptionRepository.save(plan);
 
         if(!subsdata) return res.status(400).json({status:false,message:"Failed To create Subscription Plan"});
@@ -100,7 +101,7 @@ class subscription{
           updateOps.$push={
             updatedInfo: {
             updatedfield: updatedFields,
-            updatedby: req.user ? req.user._id : null,
+            updatedby: req.user ? req.user.id : null,
             updatedAt: new Date()
           }
           }
@@ -129,7 +130,7 @@ class subscription{
           updateOps.$push = {
             updatedInfo: {
               updatedfield: updatedFields,
-              updatedby: req.user ? req.user._id : null,
+              updatedby: req.user ? req.user.id : null,
               updatedAt: new Date(),
             },
           };
@@ -154,10 +155,12 @@ class subscription{
             page_name: "Subscription plan Details",
             page_title: "Subscription plan details",
             response: data,
+            user:req.user
           });
         } catch (error) {
+          console.log(error);
           req.flash("error", error.message);
-          res.redirect(namedRouter.urlFor("admin.subscription.access"));
+          res.redirect(generateUrl("admin.subscription.access"));
         }
     };
 

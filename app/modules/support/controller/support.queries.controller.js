@@ -20,11 +20,13 @@ class supportquery{
             res.render("support/views/list.ejs",{
                 page_name:"Query Support List",
                 page_title:"Query Support",
-                stats:{total,inactive,active,pending,processing,resolved,low,high,medium}
+                stats:{total,inactive,active,pending,processing,resolved,low,high,medium},
+                user:req.user
             })
         } catch (error) {
             console.log(error);
             req.flash("error", error.message);
+            return res.redirect(generateUrl("admin.dashboard.access")); 
         }
     };
 
@@ -73,7 +75,7 @@ class supportquery{
       })
       }catch(error){
         req.flash("error", error.message);
-        res.redirect(namedRouter.urlFor("admin.queries.access"));
+        return res.redirect(generateUrl("admin.queries.access"));
       }
     };
 
@@ -93,7 +95,7 @@ class supportquery{
           updateOps.$push={
             updateInfo:{
                 updatedfield:updatedFields,
-                updatedby: req.user?req.user._id:null,
+                updatedby: req.user?req.user.id:null,
                 updatedAt:new Date()
               }
           }
@@ -123,7 +125,7 @@ class supportquery{
           updateOps.$push={
               updateInfo:{
                 updatedfield:updatedFields,
-                updatedby: req.user?req.user._id:null,
+                updatedby: req.user?req.user.id:null,
                 updatedAt:new Date()
               }
           }
@@ -153,7 +155,7 @@ class supportquery{
             updateOps.$push={
               updatedInfo:{
                 updatedfield:updatedFields,
-                updatedby: req.user?req.user._id:null,
+                updatedby: req.user?req.user.id:null,
                 updatedAt:new Date()
               }
             }

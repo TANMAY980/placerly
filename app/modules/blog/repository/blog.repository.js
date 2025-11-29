@@ -125,23 +125,9 @@ class blogRepository extends baseRepository{
           }
         },
         {
-          $lookup:{
-            from:"users",
-            localField:"updatedInfo.updatedby",
-            foreignField:"_id",
-            as:"usereInfo"
-          }
-        },
-        {
           $unwind:{
             preserveNullAndEmptyArrays:true,
             path:"$userdetails"
-          }
-        },
-        {
-          $unwind:{
-            preserveNullAndEmptyArrays:true,
-            path:"$usereInfo"
           }
         },
         {
@@ -151,7 +137,7 @@ class blogRepository extends baseRepository{
             coverImage: 1,
             description: 1,
             addedby:{$concat:["$userdetails.firstName"," ","$userdetails.lastName"]},
-            updatedby:{$concat:["$usereInfo.firstName"," ","$usereInfo.lastName"]},
+            updatedby:{$concat:["$userdetails.firstName"," ","$userdetails.lastName"]},
             updatedInfo:1,
             userdetails:1,
             userinfo:1,

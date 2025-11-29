@@ -6,6 +6,7 @@ class jsonwebtoken{
         try {
             const accesstoken=jwt.sign({
                 id:user._id,
+                name:user.firstName,
                 email:user.email,
                 role:user.role, 
             },process.env.JWT_ACCESS_TOKEN,{expiresIn:"7m"});
@@ -20,6 +21,7 @@ class jsonwebtoken{
         try {
             const refreshtoken=jwt.sign({
                 id:user._id,
+                name:user.firstName,
                 email:user.email,
                 role:user.role,
             },process.env.JWT_REFRESH_TOKEN,{expiresIn:"7d"});

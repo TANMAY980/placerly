@@ -66,13 +66,27 @@ class faqRepository extends baseRepository{
           let aggregate = faqmodel.aggregate([
             { $match: conditions },
             {
+              $lookup:{
+                from:"users",
+                localField:"addedby",
+                foreignField:"_id",
+                as:"user"
+              }
+            },
+            {
+              $unwind:{
+                preserveNullAndEmptyArrays:true,
+                path:"$user"
+              }
+            },
+            {
               $project: {
                 _id: 1,
                 question: 1,
                 answer:1,
                 status: 1,
                 updatedInfo: 1,
-                addedby: 1,
+                addedby: {$concat:["$user.firstName"," ","$user.lastName"]},
                 createdAt:1,
               },
             },
@@ -97,12 +111,27 @@ class faqRepository extends baseRepository{
             $match:filter
           },
           {
+            $lookup:{
+              from:"users",
+              localField:"addedby",
+              foreignField:"_id",
+              as:"userDetails"
+            }
+          },
+          {
+            $unwind:{
+              preserveNullAndEmptyArrays:true,
+              path:"$userDetails"
+            }
+          },
+          {
             $project:{
               _id:1,
               question:1,
               answer:1,
-              addedby:1,
+              addedby:{$concat:["$userDetails.firstName"," ","$userDetails.lastName"]},
               updatedInfo:1,
+              updatedby:{$concat:["$userDetails.firstName"," ","$userDetails.lastName"]},
               status:1,
               createdAt:1  
             }

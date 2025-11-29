@@ -22,6 +22,7 @@ class usermanagement{
                 user: req.user,
                 stats: { total, active, inactive,banned,subscribed,unsubscribed },
             });
+            
         } catch (e) {
             console.log(e);
             req.flash("error", e.message);

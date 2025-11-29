@@ -75,7 +75,7 @@ class Blog {
     try {
       const data = await blogRepository.getblogdetails({_id: new mongoose.Types.ObjectId(req.params.id)});
       if (!data) {
-        req.falsh("error", "Blog details not found");
+        req.flash("error", "Blog details not found");
         return res.redirect("admin.blog.access");
       }
       res.render("blog/views/details", {
@@ -93,24 +93,32 @@ class Blog {
 
   async blogStatusChange(req, res) {
     try {
-      const { status } = req.body;
-      const blogdata = await blogRepository.updateById(
-        { status: status },
-        req.params.id
-      );
-
-      if (!blogdata) {
-        return res
-          .status(400)
-          .json({ status: false, message: "Failed to update blog status" });
+      const {status}=req.body;
+      const subsId=new mongoose.Types.ObjectId(req.params.id)
+      const checkstatus = await blogRepository.getById(subsId);
+      const updatedFields = [];
+      if (checkstatus && checkstatus !== checkstatus.status) updatedFields.push(`status:${status}`);
+      
+      const updateOps = {
+        $set: { status },
+      };
+      if (updatedFields) {
+        updateOps.$push = {
+          updatedInfo: {
+            updatedfield: updatedFields,
+            updatedby: req.user ? req.user.id : null,
+            updatedAt: new Date(),
+          },
+        };
       }
-      return res
-        .status(200)
-        .json({ status: true, message: "Successfully updated blog status" });
-    } catch (error) {
-      return res.status(500).json({ status: true, message: error.message });
-    }
+      const statusdata = await blogRepository.updateById(updateOps,new mongoose.Types.ObjectId(subsId));
+      if (!statusdata)return res.status(400).json({ status: false, message: "Failed To Change Blog status" });
+        return res.status(200).json({status: true,message: "Blog Status changed Successfully"});
+      } catch (error) {
+        return res.status(500).json({ status: true, message: error.message });
+      }
   };
+  
 
   async getBlogJsonDetails(req, res) {
     try {

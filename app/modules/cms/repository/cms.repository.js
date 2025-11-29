@@ -125,23 +125,9 @@ class cmsRepository extends baseRepository{
             }
           },
           {
-            $lookup:{
-              from:"users",
-              localField:"addedby",
-              foreignField:"_id",
-              as:"user"
-            }
-          },
-          {
             $unwind:{
               preserveNullAndEmptyArrays:true,
               path:"$userdetails"
-            }
-          },
-          {
-            $unwind:{
-              preserveNullAndEmptyArrays:true,
-              path:"$user"
             }
           },
           {
@@ -151,7 +137,7 @@ class cmsRepository extends baseRepository{
               bannerImage:1,
               status:1,
               updatedInfo: 1,
-              addedby: {$concat:["$user.firstName"," ","$user.lastName"]},
+              addedby: {$concat:["$userdetails.firstName"," ","$userdetails.lastName"]},
               updatedby:{$concat:["$userdetails.firstName"," ","$userdetails.lastName"]},
               createdAt:1,
             }

@@ -67,6 +67,20 @@ class subscriptionRepository extends baseRepository{
               let aggregate = subScriptionmodel.aggregate([
                 { $match: conditions },
                 {
+                  $lookup:{
+                    from:"users",
+                    localField:"addedby",
+                    foreignField:"_id",
+                    as:"user"
+                  }
+                },
+                {
+                  $unwind:{
+                    preserveNullAndEmptyArrays:true,
+                    path:"$user"
+                  }
+                },
+                {
                   $project: {
                     _id: 1,
                     name:1,
@@ -75,7 +89,7 @@ class subscriptionRepository extends baseRepository{
                     duration: 1,
                     status: 1,
                     updatedInfo: 1,
-                    addedby: 1,
+                    addedby:{$concat:["$user.firstName"," ","$user.lastName"]},
                     createdAt:1,
                   },
                 },
@@ -94,6 +108,7 @@ class subscriptionRepository extends baseRepository{
     };
 
     async getSubscriptionDetailsById(filter){
+      
       try {
         const data=await subScriptionmodel.aggregate([
           {
@@ -102,7 +117,7 @@ class subscriptionRepository extends baseRepository{
           {
             $lookup:{
               from:"users",
-              localField:"updatedInfo.updateby",
+              localField:"updatedInfo.updatedby",
               foreignField:"_id",
               as:"userDetails"
             },
@@ -122,11 +137,13 @@ class subscriptionRepository extends baseRepository{
                 duration: 1,
                 status: 1,
                 updatedInfo: 1,
-                addedby: 1,
+                updatedby:{$concat:["$userDetails.firstName"," ","$userDetails.lastName"]},
+                addedby:{$concat:["$userDetails.firstName"," ","$userDetails.lastName"]},
                 createdAt:1,
           }
         }
         ]);
+        
         return data.length?data[0]:[]
       } catch (error) {
         throw(error)

@@ -79,7 +79,7 @@ class cms {
           updateOps.$push={
             updatedInfo:{
                 updatedfield:updatedFields,
-                updatedby: req.user?req.user._id:null,
+                updatedby: req.user?req.user.id:null,
                 updatedAt:new Date()
             }
           }

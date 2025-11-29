@@ -1,6 +1,8 @@
 const faqRepository = require("../repository/faq.repository");
 const mongoose = require("mongoose");
+
 class faq {
+
   async list(req, res) {
     try {
       const [total, active, inactive] = await Promise.all([
@@ -12,10 +14,11 @@ class faq {
         page_name: "faq-list",
         page_title: "Faq list",
         stats: { total, active, inactive },
+        user:req.user
       });
     } catch (error) {
-      console.log(error);
       req.falsh("error", error.message);
+      return res.redirect(generateUrl("admin.dashboard.access"));
     }
   };
 
@@ -46,7 +49,9 @@ class faq {
 
   async createFaq(req, res) {
     try {
-      const faqdata = await faqRepository.save(req.body);
+      const {question,answer} = req.body;
+      const faq={question,answer,addedby:req.user.id};
+      const faqdata=await faqRepository.save(faq);
       if (!faqdata) {
         return res.status(400).json({ status: false, message: "Failed to create Faq" });
       }
@@ -61,17 +66,19 @@ class faq {
     try {
       const data=await faqRepository.getFaqdetails({_id:new mongoose.Types.ObjectId(req.params.id)});
       if (!data) {
-        req.flash("error", "Blog details not found");
-        return res.redirect("admin.blog.access");
+        req.flash("error", "Faq details not found");
+        return res.redirect(generateUrl("admin.faq.access"));
       };
       res.render("faq/views/details",{
         page_title:"faq-management",
         page_name:"Faq details",
-        response:data 
+        response:data,
+        user:req.user 
       });
 
     } catch (error) {
       req.flash("error", error.message);
+      return res.redirect(generateUrl("admin.faq.access"));
     }
   };
 
@@ -80,18 +87,8 @@ class faq {
       const faqdata = await faqRepository.getById({
         _id: new mongoose.Types.ObjectId(req.params.id),
       });
-      if (!faqdata) {
-        return res
-          .status(400)
-          .json({ status: false, message: "Failed to retrieve faq details" });
-      }
-      return res
-        .status(200)
-        .json({
-          status: true,
-          message: "Faq data fetched successfully",
-          data: faqdata,
-        });
+      if (!faqdata) {return res.status(400).json({ status: false, message: "Failed to retrieve faq details" });}
+        return res.status(200).json({status: true,message: "Faq data fetched successfully",data: faqdata});
     } catch (error) {
       console.log(error);
       return res.status(500).json({ status: false, message: error.message });
@@ -117,7 +114,7 @@ class faq {
         updateOps.$push = {
           updatedInfo: {
             updatedfield: updatedfields,
-            updatedby: req.user ? req.user._id : null,
+            updatedby: req.user ? req.user.id : null,
             updatedAt: new Date(),
           },
         };
@@ -137,13 +134,29 @@ class faq {
   async changeFaqstatus(req,res){
     try {
       const {status}=req.body;
-      const faqdata = await faqRepository.updateById({status:status},req.params.id);
-      if(!faqdata) return res.status(400).json({status:false,message:"Failed to update status"});
-      return res.status(200).json({status:true,message:"Successfully changed status"});
-
-    } catch (error) {
-      res.status(500).json({status:false,message:error.message});
-    }
+            const faqId=new mongoose.Types.ObjectId(req.params.id)
+            const checkstatus = await faqRepository.getById(faqId);
+            const updatedFields = [];
+            if (checkstatus && checkstatus !== checkstatus.status) updatedFields.push(`status:${status}`);
+            
+            const updateOps = {
+              $set: { status },
+            };
+            if (updatedFields) {
+              updateOps.$push = {
+                updatedInfo: {
+                  updatedfield: updatedFields,
+                  updatedby: req.user ? req.user.id : null,
+                  updatedAt: new Date(),
+                },
+              };
+            }
+            const statusdata = await faqRepository.updateById(updateOps,new mongoose.Types.ObjectId(faqId));
+            if (!statusdata)return res.status(400).json({ status: false, message: "Failed To Change Faq status" });
+              return res.status(200).json({status: true,message: "Faq Status changed Successfully"});
+            } catch (error) {
+              return res.status(500).json({ status: true, message: error.message });
+            }
   };
 
   async faqDeletedbyId(req, res) {
@@ -151,13 +164,9 @@ class faq {
       const faqId = new mongoose.Types.ObjectId(req.params.id);
       const faq = await faqRepository.deleteById(faqId);
       if (!faq) {
-        return res
-          .status(400)
-          .json({ status: false, message: "Failed to delete Faq" });
+        return res.status(400).json({ status: false, message: "Failed to delete Faq" });
       }
-      return res
-        .status(200)
-        .json({ Status: true, message: "Faq Deleted successfully" });
+      return res.status(200).json({ Status: true, message: "Faq Deleted successfully" });
     } catch (error) {
       return res.status(500).json({ status: false, message: error.message });
     }

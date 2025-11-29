@@ -1,7 +1,5 @@
 const bcrypt=require('bcryptjs');
-const userRepository=require('../modules/user/repository/user.repostiroy')
 const renewToken=require('../helper/renewToken');
-
 const jwt=require('jsonwebtoken');
 
 
@@ -25,51 +23,44 @@ class authentication {
     }
   };
 
-
   async jwtauth(req, res, next) {
-  try {
-    let token =
-      req.headers["authorization"] ||
-      req.headers["x-access-token"] ||
-      req.query?.token ||
-      req.body?.token ||
-      req.cookies?.accessToken;
-
-    if (typeof token === "string" && token.toLowerCase().startsWith("bearer ")) {
-      token = token.slice(7).trim();
-    }
-
-    if (!token) {
-      const newToken = await renewToken.generateToken(req, res);
-      if (!newToken) return res.redirect(generateUrl("user.login.page"));
-
-      const decoded = jwt.verify(newToken, process.env.JWT_ACCESS_TOKEN);
-      req.user = decoded;
-      return next();
-    }
-
     try {
-      const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN);
-      req.user = decoded;
-      return next();
+      let token =req.headers["authorization"] ||req.headers["x-access-token"] ||req.query?.token ||req.body?.token ||req.cookies?.accessToken;
+      if (typeof token === "string" && token.toLowerCase().startsWith("bearer ")) {
+        token = token.slice(7).trim();
+      };
 
-    } catch (err) {
-      if (err.name === "TokenExpiredError") {
+      if (!token) {
         const newToken = await renewToken.generateToken(req, res);
         if (!newToken) return res.redirect(generateUrl("user.login.page"));
 
         const decoded = jwt.verify(newToken, process.env.JWT_ACCESS_TOKEN);
         req.user = decoded;
         return next();
+      };
+
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN);
+        req.user = decoded;
+        return next();
+
+      } catch (err) {
+        if (err.name === "TokenExpiredError") {
+          const newToken = await renewToken.generateToken(req, res);
+          if (!newToken) return res.redirect(generateUrl("user.login.page"));
+
+          const decoded = jwt.verify(newToken, process.env.JWT_ACCESS_TOKEN);
+          req.user = decoded;
+          return next();
+        }
+
+        throw err;
       }
 
-      throw err;
+    } catch (error) {
+      console.log("JWT middleware error:", error.message);
+      return res.redirect(generateUrl("user.login.page"));
     }
-
-  } catch (error) {
-    console.log("JWT middleware error:", error.message);
-    return res.redirect(generateUrl("user.login.page"));
-  }
   };
 
   async isUser(req, res, next) {

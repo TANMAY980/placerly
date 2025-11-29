@@ -83,7 +83,7 @@ class supportqueriesRepository extends baseRepository{
             {
               $project: {
                 _id: 1,
-                name:{$concat:["$userDetails.firstName","$userDetails.lastName"]},
+                name:{$concat:["$userDetails.firstName"," ","$userDetails.lastName"]},
                 email:"$userDetails.email",
                 phone:"$userDetails.contactNumber",
                 queries: 1,
