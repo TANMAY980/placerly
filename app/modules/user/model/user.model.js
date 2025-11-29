@@ -16,7 +16,7 @@ const userSchema=new Schema({
     subscription:[{type:mongoose.Schema.Types.ObjectId,ref:"subscription"}],
     subscribed:{type:Boolean,default:false},
     status:{type:String,enum:["active","inactive","banned"],default:"active"},
-    refreshToken:{type:String},
+    refreshToken:{type:String,default:""},
     isDeleted:{type:Boolean,default:false},   
 },{timestamps:true,versionKey:false});
 

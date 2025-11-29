@@ -20,7 +20,7 @@ class User{
         try {
             const {email,password}=req.body;
             
-            if(!email || !password) return res.status(400).json({status:false,message:"Please enter email and password"});
+            if(!email || !password) return res.redirect(generateUrl("user.login.page"));
 
             const user=await userRepository.getByField({email});
             if(!user) return res.redirect(generateUrl("user.register.page"));
@@ -31,7 +31,7 @@ class User{
             if(!user.is_verified){
                 const otp=await sendmail.Sendotp(req,res,user)
                     if(!otp){
-                        return res.status(400).json({status:false,message:"Failed to generate otp for verify email please try again"})
+                        return res.redirect(generateUrl("user.login.page"));
                     }
                     return res.status(200).json({status:true,message:"successfully send otp in your registered email please verify your email and login again"})
             };
@@ -48,8 +48,9 @@ class User{
                 return res.redirect(generateUrl("user.login.page"));
             };
 
-            user.refreshtoken=refreshToken;
-            await user.save();
+            user.refreshToken=refreshToken;
+            const savedUser=await user.save();
+            if(!savedUser) return res.redirect(generateUrl("user.login.page"));
 
             //for session
 

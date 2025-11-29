@@ -71,6 +71,20 @@ class cmsRepository extends baseRepository{
           let aggregate = cmsmodel.aggregate([
             { $match: conditions },
             {
+              $lookup:{
+                from:"users",
+                localField:"addedby",
+                foreignField:"_id",
+                as:"user"
+              }
+            },
+            {
+              $unwind:{
+                preserveNullAndEmptyArrays:true,
+                path:"$user"
+              }
+            },
+            {
               $project: {
                 _id: 1,
                 title: 1,
@@ -78,7 +92,7 @@ class cmsRepository extends baseRepository{
                 bannerImage: 1,
                 status: 1,
                 updatedInfo: 1,
-                addedby: { $ifNull: ["$addedby", "N/A"] },
+                addedby: {$concat:["$user.firstName"," ","$user.lastName"]},                
                 createdAt:1,
               },
             },
@@ -103,13 +117,42 @@ class cmsRepository extends baseRepository{
             $match:filter
           },
           {
+            $lookup:{
+              from:"users",
+              localField:"updatedInfo.updatedby",
+              foreignField:"_id",
+              as:"userdetails"
+            }
+          },
+          {
+            $lookup:{
+              from:"users",
+              localField:"addedby",
+              foreignField:"_id",
+              as:"user"
+            }
+          },
+          {
+            $unwind:{
+              preserveNullAndEmptyArrays:true,
+              path:"$userdetails"
+            }
+          },
+          {
+            $unwind:{
+              preserveNullAndEmptyArrays:true,
+              path:"$user"
+            }
+          },
+          {
             $project:{
               title:1,
               content:1,
               bannerImage:1,
               status:1,
               updatedInfo: 1,
-              addedby: { $ifNull: ["$addedby", "N/A"] },
+              addedby: {$concat:["$user.firstName"," ","$user.lastName"]},
+              updatedby:{$concat:["$userdetails.firstName"," ","$userdetails.lastName"]},
               createdAt:1,
             }
           }

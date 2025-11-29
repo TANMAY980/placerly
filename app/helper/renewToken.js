@@ -1,6 +1,7 @@
 const jwt=require('jsonwebtoken');
-const usermodel=require('../modules/user/model/user.model');
-const generateaccessToken=require('../helper/generate.Tokens')
+const userRepository=require('../modules/user/repository/user.repostiroy');
+const generateaccessToken=require('../helper/generate.Tokens');
+
 class renewToken{
     
     async generateToken(req,res){
@@ -11,11 +12,9 @@ class renewToken{
             };
             const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN);
 
-            const storedToken = await usermodel.findOne({ refreshToken });
-            if (!storedToken) return false;
+            const user = await userRepository.getByField({_id:decoded.id});
 
-            const user = await usermodel.findOne({_id:decoded.id});
-            if (!user) throw Error();
+            if (!user) return false;
 
            const accessToken=generateaccessToken.AccessToken(user);
 
@@ -26,14 +25,14 @@ class renewToken{
                 maxAge: 15 * 60 * 1000
             });
 
-        return true;
+        return accessToken;
 
         } catch (error) {
             console.log(error);
-            return false
+            return null
             
         }
-    }
+    };
 };
 
 module.exports=new renewToken();

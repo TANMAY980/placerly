@@ -1,6 +1,8 @@
 const cmsRepository=require('../repository/cms.repository');
 const mongoose=require('mongoose');
+
 class cms {
+
   async list(req,res) {
     try {
       const [total, active, inactive] = await Promise.all([
@@ -11,8 +13,10 @@ class cms {
       res.render("cms/views/list", {
         page_name: "Cms List",
         page_title: "Cms manage",
+        user:req.user,
         stats: { total, active, inactive },
       });
+
     } catch (error) {
       console.log(error);
       req.flash("error", error.message);
@@ -48,7 +52,7 @@ class cms {
     try {
       const { title,content } = req.body;  
       const imageUrls = (req.files || []).map((file) => file.path);
-      const cms = { title, content, bannerImage: imageUrls };
+      const cms = { title, content, bannerImage: imageUrls ,addedby:req.user.id};
       const cmsdata = await cmsRepository.save(cms);
 
       if (!cmsdata) {
@@ -116,7 +120,7 @@ class cms {
         updateOps.$push = {
           updatedInfo: {
             updatedfield: updatedFields,
-            updatedby: req.user ? req.user._id : null,
+            updatedby: req.user ? req.user.id : null,
             updatedAt: new Date(),
           },
         };
@@ -149,11 +153,14 @@ class cms {
         req.falsh("error", "Cms details not found");
         return res.redirect("admin.cms.access");
       };
+
       res.render("cms/views/details",{
         page_title:"Cms Details",
         page_name:"Cms Details",
-        response:cmsdata
+        response:cmsdata,
+        user:req.user
       });
+
       
     } catch (error) {
       req.flash("error", error.message);

@@ -8,7 +8,7 @@ const cmsSchema = new Schema(
     content:{type:String,required:true},
     bannerImage:[{ type:String,default: "" }],
     status:{type:String,enum:["active","inactive"],default: "active" },
-    addedBy:{type:Schema.Types.ObjectId,ref:"user"},
+    addedby:{type:Schema.Types.ObjectId,ref:"user"},
     updatedInfo: [
       {
         updatedfield: [{type:String,default:""}],

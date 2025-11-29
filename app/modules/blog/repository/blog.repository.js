@@ -67,6 +67,20 @@ class blogRepository extends baseRepository{
           let aggregate = blogmodel.aggregate([
             { $match: conditions },
             {
+              $lookup:{
+                  from:"users",
+                  localField:"addedby",
+                  foreignField:"_id",
+                  as:"userdetails"
+              }
+            },
+            {
+              $unwind:{
+                preserveNullAndEmptyArrays:true,
+                path:"$userdetails"              
+              }
+            }, 
+            {
               $project: {
                 _id: 1,
                 name: 1,
@@ -75,17 +89,20 @@ class blogRepository extends baseRepository{
                 description: 1,
                 status: 1,
                 updatedInfo: 1,
-                addedby: 1,
+                userdetails:1,
+                addedby:{$concat:["$userdetails.firstName"," ","$userdetails.lastName"]},
                 createdAt:1,
               },
             },
             sortOperator,
           ]);
+
+          
     
           let options = { page: req.body.page || 1, limit: req.body.length || 10, allowDiskUse: true};
     
           let allDatas = await blogmodel.aggregatePaginate(aggregate, options);
-          
+  
           return allDatas;
         } catch (e) {
           console.log(e);
@@ -100,18 +117,50 @@ class blogRepository extends baseRepository{
           $match:filter
         },
         {
+          $lookup:{
+            from:"users",
+            localField:"addedby",
+            foreignField:"_id",
+            as:"userdetails"
+          }
+        },
+        {
+          $lookup:{
+            from:"users",
+            localField:"updatedInfo.updatedby",
+            foreignField:"_id",
+            as:"usereInfo"
+          }
+        },
+        {
+          $unwind:{
+            preserveNullAndEmptyArrays:true,
+            path:"$userdetails"
+          }
+        },
+        {
+          $unwind:{
+            preserveNullAndEmptyArrays:true,
+            path:"$usereInfo"
+          }
+        },
+        {
           $project:{
             name:1,
             title:1,
             coverImage: 1,
             description: 1,
-            addedby:1,
+            addedby:{$concat:["$userdetails.firstName"," ","$userdetails.lastName"]},
+            updatedby:{$concat:["$usereInfo.firstName"," ","$usereInfo.lastName"]},
             updatedInfo:1,
+            userdetails:1,
+            userinfo:1,
             status: 1,
             createdAt:1,
           },
         },
       ]);
+     
       return data.length ? data[0] : null; 
       
     } catch (error) {

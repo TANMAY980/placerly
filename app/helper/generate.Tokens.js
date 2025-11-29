@@ -8,7 +8,7 @@ class jsonwebtoken{
                 id:user._id,
                 email:user.email,
                 role:user.role, 
-            },process.env.JWT_ACCESS_TOKEN,{expiresIn:"5m"});
+            },process.env.JWT_ACCESS_TOKEN,{expiresIn:"7m"});
             return accesstoken;
         } catch (error) {
             console.log(error);
@@ -20,6 +20,8 @@ class jsonwebtoken{
         try {
             const refreshtoken=jwt.sign({
                 id:user._id,
+                email:user.email,
+                role:user.role,
             },process.env.JWT_REFRESH_TOKEN,{expiresIn:"7d"});
             return refreshtoken;
         } catch (error) {

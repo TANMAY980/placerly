@@ -83,7 +83,7 @@
                             </h1>
                             <p class="blog-meta">
                                 <strong>Added by:</strong>
-                                <%= response.addedby?.[0]?.name || 'Admin' %> |
+                                <%= response.addedby || 'Admin' %> |
                                     <strong>Date:</strong>
                                     <%= response.createdAt ? new Date(response.createdAt).toLocaleString() : '' %>  |
                                         <strong>Status:</strong>
@@ -113,10 +113,10 @@
                             <!-- Author Section -->
                             <div class="author-info">
                                 <div>
-                                    <h6>
-                                        <%= response.addedby?.[0]?.name || 'Unknown Author' %>
+                                    <h6><span>Added by :</span>
+                                        <%= response.addedby || 'Unknown' %>
                                     </h6>
-                                    <span>Cms Author</span>
+                                    
                                 </div>
                             </div>
 
@@ -131,7 +131,7 @@
                                                 <div class="user-info">
                                                     <div>
                                                         <h6>
-                                                            <%= update.updatedby?.[0]?.name || 'Admin' %>
+                                                            <%= response.updatedby || 'Admin' %>
                                                         </h6>
                                                         <small>
                                                             <%= update.updatedAt ? new

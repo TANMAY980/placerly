@@ -7,13 +7,13 @@ const blogSchema=new Schema({
     title:{type:String,required:true,index:true},
     coverImage:[{type:String,required:true,default:""}],
     description:{type:String,required:true,default:""},
-    status:{type:String,enum:["active","inactive"],default:"active"},
+    status:{type:String,enum:["active","inactive"],default:"inactive"},
     updatedInfo:[{
         updatedfield:[{type:String,default:""}],
         updatedby:{type:Schema.Types.ObjectId,ref:"user"},
         updatedAt:{type:Date,default:Date.now}
     }],
-    addedby:[{type:Schema.Types.ObjectId,ref:"user"}],
+    addedby:{type:Schema.Types.ObjectId,ref:"user"},
     isDeleted:{type:Boolean,default:false},
     
 },{timestamps:true,versionKey:false});

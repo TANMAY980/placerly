@@ -14,7 +14,7 @@ class authentication {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   async check_password(password, hashedPassword) {
     try {
@@ -23,57 +23,54 @@ class authentication {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
 
   async jwtauth(req, res, next) {
-    try {
-      let token =
-        req.body?.token ||
-        req.query?.token ||
-        req.headers["x-access-token"] ||
-        req.headers["authorization"];
+  try {
+    let token =
+      req.headers["authorization"] ||
+      req.headers["x-access-token"] ||
+      req.query?.token ||
+      req.body?.token ||
+      req.cookies?.accessToken;
 
-      if (typeof token === "string" && token.toLowerCase().startsWith("bearer ")) {
-        token = token.slice(7).trim();
-      };
-
-      if (!token && req.cookies) {
-        token = req.cookies.accessToken
-      };
-
-      if (!token) {
-        const renewed = await renewToken(req, res);
-        if (!renewed) {
-          return res.redirect(generateUrl("user.login.page"));
-        }
-        return next();
-      };
-
-      const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN);
-
-      if (!decoded || !decoded.email) {
-        return res.redirect(generateUrl("user.login.page"));
-      };
-
-      const foundUser = await userRepository.getByField({ email: decoded.email });
-      if (!foundUser) {
-        return res.redirect(generateUrl("user.login.page"));
-      };
-
-      req.user = {
-        email: decoded.email,
-        id: foundUser._id,
-        role: foundUser.role
-      };
-
-      return next();
-    } catch (error) {
-      console.error( error.message);
-      return res.redirect(generateUrl("user.login.page"));
+    if (typeof token === "string" && token.toLowerCase().startsWith("bearer ")) {
+      token = token.slice(7).trim();
     }
-}
 
+    if (!token) {
+      const newToken = await renewToken.generateToken(req, res);
+      if (!newToken) return res.redirect(generateUrl("user.login.page"));
+
+      const decoded = jwt.verify(newToken, process.env.JWT_ACCESS_TOKEN);
+      req.user = decoded;
+      return next();
+    }
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN);
+      req.user = decoded;
+      return next();
+
+    } catch (err) {
+      if (err.name === "TokenExpiredError") {
+        const newToken = await renewToken.generateToken(req, res);
+        if (!newToken) return res.redirect(generateUrl("user.login.page"));
+
+        const decoded = jwt.verify(newToken, process.env.JWT_ACCESS_TOKEN);
+        req.user = decoded;
+        return next();
+      }
+
+      throw err;
+    }
+
+  } catch (error) {
+    console.log("JWT middleware error:", error.message);
+    return res.redirect(generateUrl("user.login.page"));
+  }
+  };
 
   async isUser(req, res, next) {
     try {
@@ -106,4 +103,4 @@ class authentication {
     }
   };
 }
-module.exports=new authentication()
+module.exports=new authentication();

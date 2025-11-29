@@ -15,7 +15,6 @@ class Blog {
         stats: { total, active, inactive },
         user:req.user
       });
-      console.log(req.user);
       
     } catch (error) {
       console.log(error);
@@ -56,20 +55,16 @@ class Blog {
 
   async BlogCreate(req, res) {
     try {
-      const { name, title, description } = req.body;
+      const { name, title, description} = req.body;
       const imageUrls = (req.files || []).map((file) => file.path);
-      const blog = { name, title, description, coverImage: imageUrls };
+      const blog = { name, title, description, coverImage: imageUrls,addedby:req.user.id};
 
       const blogdata = await blogRepository.save(blog);
 
       if (!blogdata) {
-        return res
-          .status(400)
-          .json({ status: false, message: "Failed to add blog" });
+        return res.status(400).json({ status: false, message: "Failed to add blog" });
       }
-      return res
-        .status(200)
-        .json({ status: true, message: "Blog Added Successfully" });
+      return res.status(200).json({ status: true, message: "Blog Added Successfully" });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ status: false, messaeg: error.message });
@@ -87,6 +82,7 @@ class Blog {
         page_name: "Blog-details",
         page_title: "Blog Details",
         response: data,
+        user:req.user
       });
       
     } catch (error) {
@@ -143,14 +139,14 @@ class Blog {
         updatedFields.push("status");
 
       const updateOps = {
-        $set: { name, title, description, status },
+        $set: { name, title, description, status},
       };
 
       if (updatedFields.length > 0) {
         updateOps.$push = {
           updatedInfo: {
             updatedfield: updatedFields,
-            updatedby: req.user ? req.user._id : null,
+            updatedby: req.user ? req.user.id : null,
             updatedAt: new Date(),
           },
         };
@@ -159,8 +155,8 @@ class Blog {
       if (req.files && req.files.length > 0) {
         const newImages = req.files.map((file) => file.path);
 
-        blog.coverImage = Array.isArray(blog.coverImage)
-          ? [...blog.coverImage, ...newImages]
+        existingBlog.coverImage = Array.isArray(existingBlog.coverImage)
+          ? [...existingBlog.coverImage, ...newImages]
           : newImages;
       }
 
