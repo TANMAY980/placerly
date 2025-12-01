@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Placerly | Register</title>
+  <link rel="stylesheet" href="/app-assets/css/pages/registration.css">
+</head>
+<body>
+  <main class="card">
+    <h1>Create an Placerly account</h1>
+    <form id="regForm" novalidate>
+      <div class="grid">
+        <div>
+          <label for="firstName">First name</label>
+          <input id="firstName" name="firstName" type="text" inputmode="text" autocomplete="given-name" required />
+          <div class="error" id="err-firstName" aria-live="polite"></div>
+        </div>
+
+        <div>
+          <label for="lastName">Last name</label>
+          <input id="lastName" name="lastName" type="text" inputmode="text" autocomplete="family-name" required />
+          <div class="error" id="err-lastName" aria-live="polite"></div>
+        </div>
+
+        <div class="full">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required />
+          <div class="error" id="err-email" aria-live="polite"></div>
+        </div>
+
+        <div>
+          <label for="phone">Phone</label>
+          <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. +91 98765 43210" required />
+          <div class="error" id="err-phone" aria-live="polite"></div>
+        </div>
+
+        <div>
+          <label for="password">Password</label>
+          <div class="row">
+            <input id="password" name="password" type="password" autocomplete="new-password" required minlength="8" />
+            <button type="button" class="toggle" aria-label="toggle password visibility" data-target="password">👁️</button>
+          </div>
+          <div class="hint">Minimum 8 characters.</div>
+          <div class="error" id="err-password" aria-live="polite"></div>
+        </div>
+
+        <div>
+          <label for="confirmPassword">Confirm password</label>
+          <div class="row">
+            <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required />
+            <button type="button" class="toggle" aria-label="toggle confirm password" data-target="confirmPassword">👁️</button>
+          </div>
+          <div class="error" id="err-confirmPassword" aria-live="polite"></div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <button id="submitBtn" type="submit">Register</button>
+        <div class="small">Already have an account? <a href="<%=generateUrl('user.login.page')%>">Sign in</a></div>
+      </div>
+
+    </form>
+
+    <template id="successTpl">
+      <div style="margin-top:14px;padding:12px;border-radius:8px;background:#ecfdf5;color:#064e3b">Registration data ready to be sent to the server.</div>
+    </template>
+  </main>
+</body>
+</html>

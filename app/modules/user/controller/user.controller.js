@@ -16,6 +16,19 @@ class User{
         }
     };
 
+    async registraionPage(req,res){
+        try {
+            res.render("user/views/registration",{
+                page_name:"Registration page",
+                page_title:"Registraion page"
+            })
+        } catch (error) {
+            console.log(error);
+            req.flash("error",error.message);
+            return res.redirect(generateUrl("user.home"));
+        }
+    }
+
     async login(req,res){
         try {
             const {email,password}=req.body;

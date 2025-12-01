@@ -1,0 +1,130 @@
+:root {
+    --accent: #2563eb;
+    --danger: #ef4444;
+    --muted: #6b7280
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    font-family: Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background-image: url("../../../images/registration.jpg");
+    background-size: cover;           
+    background-position: center;       
+    background-repeat: no-repeat;
+    color: #0f172a;
+    margin: 0;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+
+.card {
+    width:100%;
+    max-width:520px;
+
+    background: rgba(255, 255, 255, 0.25); 
+    backdrop-filter: blur(12px);         
+    -webkit-backdrop-filter: blur(12px);  
+
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    padding: 28px;
+
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+h1 {
+    font-size: 20px;
+    margin: 0 0 6px
+}
+
+p.lead {
+    margin: 0 0 20px;
+    color: var(--muted)
+}
+
+form .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e6eef6;
+    border-radius: 8px;
+    font-size: 14px
+}
+
+.full {
+    grid-column: 1/-1
+}
+
+.row {
+    display: flex;
+    gap: 8px;
+    align-items: center
+}
+
+.error {
+    color: var(--danger);
+    font-size: 13px;
+    margin-top: 6px
+}
+
+.hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px
+}
+
+button {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer
+}
+
+button[disabled] {
+    opacity: .6;
+    cursor: not-allowed
+}
+
+.small {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 12px
+}
+
+.toggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px
+}
+
+@media (max-width:520px) {
+    .grid {
+        grid-template-columns: 1fr
+    }
+}

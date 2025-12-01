@@ -152,3 +152,71 @@ div.dataTables_filter {
 .header-search-filter .dt-buttons {
     margin-left: 12px;
 }
+
+
+.profile-upload-box {
+  width: 220px;
+  height: 220px;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  border: 4px solid #7367f0;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.profile-big-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Camera Icon Overlay */
+.upload-overlay {
+  position: absolute;
+  bottom: 8px;
+  right: 18px;
+  background: #7367f0;
+  color: white;
+  pointer-events: auto;
+  cursor: pointer;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+  transition: 0.3s;
+}
+
+.upload-overlay:hover {
+  transform: scale(1.1);
+  opacity: 0.9;
+}
+
+.delete-overlay {
+  position: absolute;
+  bottom: 14px;
+  left: 30px;
+  background: #dc3545;
+  border: none;
+  color: white;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+  transition: 0.3s;
+}
+
+.delete-overlay:hover {
+  transform: scale(1.1);
+  background: #b02a37;
+}
+
