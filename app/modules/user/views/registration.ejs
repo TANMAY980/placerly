@@ -4,10 +4,59 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Placerly | Register</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/app-assets/css/pages/registration.css">
+  <link rel="stylesheet" href="/app-assets/css/pages/flash.css">
 </head>
 <body>
+  <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top">
+  <div class="container-fluid px-4 px-lg-5">
+    <a href="<%=generateUrl('user.home')%>" class="navbar-brand d-flex align-items-center">
+      <h1 class="m-0">
+        <img class="img-fluid me-3" src="/images/icon/icon-02-primary.png" alt="" />Insure
+      </h1>
+    </a>
+
+    <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <div class="navbar-nav mx-auto bg-light rounded pe-4 py-3 py-lg-0">
+        <a href="about.html" class="nav-item nav-link">About Us</a>
+        <a href="service.html" class="nav-item nav-link">Faqs</a>
+        <a href="service.html" class="nav-item nav-link">Blogs</a>
+      </div>
+    </div>
+
+    <a href="<%=generateUrl('user.login.page')%>" class="btn btn-primary mx-2 px-3 d-none d-lg-block">Sign In</a>
+  </div>
+</nav>
+
   <main class="card">
+    <div class="d-flex justify-content-center">
+          <div style="width: 300px">
+            <!-- Display success message if available -->
+            <% if (successMessage.length> 0) { %>
+              <div class="toast-message toast-success">
+                <span>
+                  <%= successMessage[0] %>
+                </span>
+                <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+              </div>
+              <% } %>
+            
+                <% if (errorMessage.length> 0) { %>
+                  <div class="toast-message toast-error">
+                    <span>
+                      <%= errorMessage[0] %>
+                    </span>
+                    <button onclick="this.parentElement.remove()">✖</button>
+                  </div>
+                  <% } %>
+
+          </div>
+    </div>
     <h1>Create an Placerly account</h1>
     <form id="regForm" novalidate>
       <div class="grid">
@@ -67,5 +116,6 @@
       <div style="margin-top:14px;padding:12px;border-radius:8px;background:#ecfdf5;color:#064e3b">Registration data ready to be sent to the server.</div>
     </template>
   </main>
+<script src="/js/flash.js"></script>
 </body>
 </html>

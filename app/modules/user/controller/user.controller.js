@@ -127,8 +127,8 @@ class User{
     async user_home_page(req,res){
         try {
             res.render("user/views/home",{
-                Page_name:"home page",
-                Page_title:"Home"
+                Page_name:"Placerly",
+                Page_title:"Placerly"
 
             })
         } catch (error) {
