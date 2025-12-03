@@ -60,6 +60,7 @@ class Email{
             console.log(error);
         }
     };
+
     async updatePassword(req,res){
         try {
             await mailtransporter.sendMail({
@@ -116,6 +117,27 @@ class Email{
             </div>
             `,
             });
+        } catch (error) {
+            console.log(error);
+            
+        }
+    };
+
+    async resetpassword(checkuser,resetlink){
+        try {
+            const sendmail=await mailtransporter.sendMail({
+              from: process.env.EMAIL_FROM,
+              to: checkuser.email,
+              subject: "Password Reset Link",
+              html: `<p>Hello ${checkuser.firstName},</p>
+              <p>Please <a href="${resetlink}">Click here</a> to reset your password.</p>
+              <p>Or copy and open this link:<br><a href="${resetlink}">${resetlink}</a></p>
+              `
+            });
+            if(sendmail){
+                return true
+            };
+            return false
         } catch (error) {
             console.log(error);
             

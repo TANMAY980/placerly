@@ -4,9 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WealthWise | Login</title>
+  <title>Placerly | Login</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/app-assets/css/pages/user.login.css">
   <!----Flash style-->
   <link rel="stylesheet" href="/app-assets/css/pages/flash.css">
   <!-- Favicon -->
@@ -31,10 +30,13 @@
 
   <!-- Template Stylesheet -->
   <link href="/app-assets/css/pages/style.css" rel="stylesheet" />
+  <link href="/app-assets/css/pages/userdashboard.css" rel="stylesheet" />
 </head>
 
 <body>
-  <div class="container-fluid bg-dark text-white-50 py-2 px-0 d-none d-lg-block">
+  <div
+      class="container-fluid bg-dark text-white-50 py-2 px-0 d-none d-lg-block"
+    >
     <div class="d-flex justify-content-center">
       <div style="width: 300px">
         <!-- Display success message if available -->
@@ -58,35 +60,43 @@
 
       </div>
     </div>
-    <div class="row gx-0 align-items-center">
-      <div class="col-lg-7 px-5 text-start">
-        <div class="h-100 d-inline-flex align-items-center me-4">
-          <small class="fa fa-phone-alt me-2"></small>
-          <small>+012 345 6789</small>
+      <div class="row gx-0 align-items-center">
+        <div class="col-lg-7 px-5 text-start">
+          <div class="h-100 d-inline-flex align-items-center me-4">
+            <small class="fa fa-phone-alt me-2"></small>
+            <small>+012 345 6789</small>
+          </div>
+          <div class="h-100 d-inline-flex align-items-center me-4">
+            <small class="far fa-envelope-open me-2"></small>
+            <small>info@example.com</small>
+          </div>
+          <div class="h-100 d-inline-flex align-items-center me-4">
+            <small class="far fa-clock me-2"></small>
+            <small>Mon - Fri : 09 AM - 09 PM</small>
+          </div>
         </div>
-        <div class="h-100 d-inline-flex align-items-center me-4">
-          <small class="far fa-envelope-open me-2"></small>
-          <small>info@example.com</small>
-        </div>
-        <div class="h-100 d-inline-flex align-items-center me-4">
-          <small class="far fa-clock me-2"></small>
-          <small>Mon - Fri : 09 AM - 09 PM</small>
-        </div>
-      </div>
-      <div class="col-lg-5 px-5 text-end">
-        <div class="h-100 d-inline-flex align-items-center">
-          <a class="text-white-50 ms-4" href=""><i class="fab fa-facebook-f"></i></a>
-          <a class="text-white-50 ms-4" href=""><i class="fab fa-twitter"></i></a>
-          <a class="text-white-50 ms-4" href=""><i class="fab fa-linkedin-in"></i></a>
-          <a class="text-white-50 ms-4" href=""><i class="fab fa-instagram"></i></a>
+        <div class="col-lg-5 px-5 text-end">
+          <div class="h-100 d-inline-flex align-items-center">
+            <a class="text-white-50 ms-4" href=""
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a class="text-white-50 ms-4" href=""
+              ><i class="fab fa-twitter"></i
+            ></a>
+            <a class="text-white-50 ms-4" href=""
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <a class="text-white-50 ms-4" href=""
+              ><i class="fab fa-instagram"></i
+            ></a>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top px-4 px-lg-5">
     <a href="<%=generateUrl('user.home')%>" class="navbar-brand d-flex align-items-center">
       <h1 class="m-0">
-        <img class="img-fluid me-3" src="/images/icon/icon-02-primary.png" alt="" />Placerly
+        <img class="img-fluid me-3" src="/images/icon/icon-02-primary.png" alt="" />Insure
       </h1>
     </a>
     <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -99,7 +109,6 @@
         <a href="service.html" class="nav-item nav-link">Blogs</a>
       </div>
     </div>
-    <a href="<%=generateUrl('user.registraion.page')%>" class="btn btn-primary mx-2 px-3 d-none d-lg-block">Sign Up</a>
   </nav>
   <div class="login-container d-flex align-items-center justify-content-center">
     <div class="d-flex justify-content-center">
@@ -125,53 +134,112 @@
 
       </div>
     </div>
-    <div class="overlay-content container">
-      <div class="row align-items-center">
-        <div class="col-md-6 text-section text-center text-md-start">
-          <h1 class="display-5 fw-bold">Placerly,</h1>
-          <p class="lead">Grow, invest, and secure your future with confidence.</p>
+  </div>
+  <div class="container py-5">
+  <h2 class="fw-bold text-center mb-4">User Dashboard</h2>
+
+  <div class="row g-4">
+
+    <!-- ASSETS -->
+    <div class="col-md-4">
+      <div class="dashboard-card">
+        <i class="fas fa-briefcase"></i> 
+        <h4>Assets</h4>
+        <p>Manage your bank & investment accounts</p>
+
+        <ul>
+          <li>Cash Accounts</li>
+          <li>Stocks & Shares</li>
+        </ul>
+
+        <div class="d-flex justify-content-between">
+            <a href="" class="btn btn-dashboard">Add Assets</a>
+            <a href="" class="btn btn-dashboard">View Assets</a>
         </div>
-        <div class="col-md-6 d-flex justify-content-center">
-
-          <div class="login-card">
-
-            <h3 class="text-center mb-4">Welcome Back</h3>
-
-            <form action="<%=generateUrl('user.login')%>" method="post" novalidate>
-
-              <div class="input-group mb-3">
-                <span class="input-group-text">
-                  <i class="fas fa-envelope"></i>
-                </span>
-                <input type="email" name="email" class="form-control" placeholder="Email" required>
-              </div>
-
-              <div class="input-group mb-3">
-                <span class="input-group-text pointer" onclick="togglePassword()">
-                  <i id="eyeIcon" class="fas fa-eye"></i>
-                </span>
-                <input type="password" id="password" name="password" class="form-control" placeholder="Password"
-                  required>
-              </div>
-
-              <button type="submit" class="btn btn-login w-100">
-                Sign In
-              </button>
-
-              <div class="d-flex justify-content-between small mt-3">
-                <a href="<%=generateUrl('user.registraion.page')%>" class="create-link">Create account</a>
-                <a href="<%=generateUrl('user.forgotpassword.page')%>" class="forgot-link">Forgot Password?</a>
-              </div>
-
-            </form>
-
-          </div>
-        </div>
-
       </div>
     </div>
+
+    <!-- DEBTS -->
+    <div class="col-md-4">
+      <div class="dashboard-card">
+        <i class="bi bi-credit-card"></i>
+        <h4>Debts</h4>
+        <p>Track your credit cards & loans</p>
+
+        <ul>
+          <li>Credit Cards</li>
+          <li>Mortgage</li>
+        </ul>
+
+        <div class="d-flex justify-content-between">
+            <a href="" class="btn btn-dashboard">Add Debt account</a>
+            <a href="" class="btn btn-dashboard">View Debts</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSURANCES -->
+    <div class="col-md-4">
+      <div class="dashboard-card">
+        <i class="bi bi-shield-check"></i>
+        <h4>Insurances</h4>
+        <p>All your policies in one place</p>
+
+        <ul>
+          <li>Life Insurance</li>
+          <li>Home Insurance</li>
+        </ul>
+
+        <div class="d-flex justify-content-between">
+            <a href="" class="btn btn-dashboard">Add Policies</a>
+            <a href="" class="btn btn-dashboard">View Policies</a>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- UTILITIES -->
+    <div class="col-md-4">
+      <div class="dashboard-card">
+        <i class="bi bi-lightning-charge"></i>
+        <h4>Utilities</h4>
+        <p>Energy & water accounts</p>
+
+        <ul>
+          <li>Energy Providers</li>
+          <li>Water Suppliers</li>
+        </ul>
+        <div class="d-flex justify-content-between">
+            <a href="" class="btn btn-dashboard">Add Utilities</a>
+            <a href="" class="btn btn-dashboard">View Utilities</a>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- TRANSITION -->
+    <div class="col-md-4">
+      <div class="dashboard-card transition-card">
+        <i class="bi bi-person-check"></i>
+        <h4>Transition</h4>
+        <p>Manage executors & beneficiaries</p>
+
+        <ul>
+          <li>Add Executor</li>
+          <li>Add Beneficiary</li>
+        </ul>
+
+        <div class="d-flex justify-content-between">
+            <a href="" class="btn btn-dashboard">Add Transition</a>
+            <a href="" class="btn btn-dashboard">View Transition</a>
+        </div>
+        
+      </div>
+    </div>
+
   </div>
-  <!---Footer-->
+</div>
+
   <div class="container-fluid bg-dark footer pt-5 wow fadeIn" data-wow-delay="0.1s">
     <div class="container py-5">
       <div class="row g-5">
@@ -237,20 +305,7 @@
   <script src="/lib/counterup/counterup.min.js"></script>
   <!---Flash Js-->
   <script src="/js/flash.js"></script>
-  <script>
-    function togglePassword() {
-      const pass = document.getElementById("password");
-      const icon = document.getElementById("eyeIcon");
 
-      if (pass.type === "password") {
-        pass.type = "text";
-        icon.classList.replace("fa-eye", "fa-eye-slash");
-      } else {
-        pass.type = "password";
-        icon.classList.replace("fa-eye-slash", "fa-eye");
-      }
-    }
-  </script>
 
 </body>
 

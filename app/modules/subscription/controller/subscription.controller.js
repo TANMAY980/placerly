@@ -50,8 +50,6 @@ class subscription{
     async createSubsPlan(req,res){
       try {
         const{ name,charges,inclusions,details,duration}=req.body;
-        console.log(req.body);
-        
         const check=await subscriptionRepository.getByField({name});
         if(check) return res.status(409).json({status:false,messaeg:"Subscription plan already exists"});
 

@@ -34,26 +34,119 @@ body, html {
 }
 
 .login-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  padding: 40px;
-  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  padding: 35px;
+  border-radius: 18px;
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  color: #fff;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.login-card input {
+  background: rgba(255,255,255,0.15) !important;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff !important;
+  margin-bottom: 15px;
+}
+
+.login-card input::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,0.15) inset !important;
+  -webkit-text-fill-color: #fff !important;
 }
 
 .btn-login {
-  background-color: #228aaa;
+  background-color: #228aaa !important;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   font-weight: 600;
-  color: white;
+  color: #fff !important;
   transition: 0.3s;
+  margin-top: 10px;
 }
 
+
 .btn-login:hover {
-  background-color: #0b89af;
+  background-color: #1b6f85;
+}
+
+
+.login-card input:invalid {
+  box-shadow: none;
+}
+
+.login-card input:focus:invalid {
+  outline: none;
+}
+
+.forgot-link {
+  color: #aad8e6;    /* Soft blue */
+  text-decoration: none;
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+.forgot-link:hover {
+  color: #da2020;
+  text-decoration: underline;
+}
+.create-link {
+  color: #aad8e6;    /* Soft blue */
+  text-decoration: none;
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+.create-link:hover {
+  color: #20da9c;
+  text-decoration: underline;
+}
+
+
+.input-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.15);
+  border-radius: 12px;
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+/* Icon styling */
+.input-icon {
+  width: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(255,255,255,0.8);
+  font-size: 1.1rem;
+}
+
+/* Input size fix */
+.input-group input {
+  border: none;
+  background: transparent !important;
+  color: #fff !important;
+  height: 45px;
+  padding: 10px;
+  flex: 1;
+}
+
+.input-group input::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+/* Prevent misalignment */
+.input-group input:focus {
+  outline: none;
+  box-shadow: none;
 }

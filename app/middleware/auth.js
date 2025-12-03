@@ -58,20 +58,25 @@ class authentication {
       }
 
     } catch (error) {
-      console.log("JWT middleware error:", error.message);
       return res.redirect(generateUrl("user.login.page"));
     }
   };
 
   async isUser(req, res, next) {
     try {
-      if (!req.user)
-        return res.status(401).json({ status: false, message: "Unauthorized. No user found." });
+      if (!req.user){
+        req.flash('error',"Failed To retrieve user info");
+        return res.redirect(generateUrl("user.login.page"));
+      }
+        
 
       if (req.user.role === "user") {
         return next();
-      }
-      return res.status(403).json({ status: false, message: "Access denied. Users only routes" });
+      };
+      req.flash('error',"Access Denied")
+      res.clearCookie('accessToken');
+      res.clearCookie('refreshToken');
+      return res.redirect(generateUrl("user.login.page"));
     } catch (error) {
       console.error(error);
       return res.status(500).json({ status: false, message: error.message });
@@ -81,13 +86,17 @@ class authentication {
   async isAdmin(req, res, next) {
     try {
       if (!req.user) {
-        return res.status(401).json({ status: false, message: "Unauthorized. No user found." });
+        req.flash('error',"Failed To retrieve user info")
+        return res.redirect(generateUrl("user.login.page"));
       }
 
       if (req.user.role === "admin") {
         return next();
-      }
-      return res.status(403).json({ status: false, message: "Access denied. Admin only routes" });
+      };
+      req.flash('error',"Access Denied")
+      res.clearCookie('accessToken');
+      res.clearCookie('refreshToken');
+      return res.redirect(generateUrl("user.login.page"));
     } catch (error) {
       console.error(error);
       return res.status(500).json({ status: false, message: error.message });

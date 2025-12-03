@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        <%= page_title %>
+    </title>
+
+    <!-- jQuery -->
+    <script src="/plugins/jquery/jquery.min.js"></script>
+    <!-- Moment + DataTables -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+
+    <!-- Google Font -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" href="/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="/plugins/jqvmap/jqvmap.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="/plugins/daterangepicker/daterangepicker.css">
+    <!-- summernote -->
+    <link rel="stylesheet" href="/plugins/summernote/summernote-bs4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/dist/css/adminlte.min.css">
+    <!-----Subscription style-->
+    <link rel="stylesheet" href="/app-assets/css/pages/assetsdetails.css">
+    <!----loader style-->
+    <link rel="stylesheet" href="/app-assets/css/pages/loader.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        <!-- Preloader -->
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="/dist/img/coin.gif" alt="PlacerlyLogo" height="60" width="60">
+        </div>
+
+        <!-- Navbar -->
+        <%- include('../views/adminpartials/navbar') %>
+            <!-- Main Sidebar -->
+            <%- include('../views/adminpartials/sidebar') %>
+                <!-- Content Wrapper -->
+                <div class="content-wrapper">
+                    <div class="content-header d-flex justify-content-between">
+                        <div class="container-fluid">
+                            <div class="row mb-3 align-items-center justify-content-between">
+                                <div class="col-sm-6">
+                                    <h3 class="m-0">
+                                        <%=page_name%>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Content Header -->
+                    </head>
+
+                    <body>
+                        <div class="blog-container">
+
+                            <p class="blog-meta">
+                                <strong>Added by:</strong>
+                                <%= response.addedby || 'Admin' %> |
+                                    <strong>Date:</strong>
+                                    <%= response.createdAt ? new Date(response.createdAt).toLocaleString() : '' %>
+
+                                        <strong>Status:</strong> |
+                                        <span
+                                            class="badge <%= response.status === 'active' ? 'bg-success' : 'bg-secondary' %>">
+                                            <%= response.status %>
+                                        </span>
+                            </p>
+
+                            <div class="justify-content-between align-items-center mb-4">
+                                <h1 class="blog-title text-center "><%= response.name %></h1>
+                                <span class="account-type-tag">Account Type : ₹<%= response.accounttype %></span>
+                            </div>
+
+                            <% if (response.updatedInfo && response.updatedInfo.length> 0) { %>
+                                <div class="update-history mt-5">
+                                    <h4 class="section-title">
+                                        <i class="fas fa-history me-2"></i> Update History
+                                    </h4>
+                                    <% response.updatedInfo.forEach((update, index)=> { %>
+                                        <div class="update-card">
+                                            <div class="update-header">
+                                                <div class="user-info">
+                                                    <div>
+                                                        <h6>
+                                                            Updated By : <%= response.updatedby || 'Admin' %>
+                                                        </h6>
+                                                        <small>
+                                                            <%= update.updatedAt ? new
+                                                                Date(update.updatedAt).toLocaleString() : '' %>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                                <span class="update-index">#<%= index + 1 %></span>
+                                            </div>
+
+                                            <div class="update-body">
+                                                <p><strong>Updated Fields:</strong></p>
+                                                <ul>
+                                                    <% update.updatedfield.forEach(field=> { %>
+                                                        <li><i class="fas fa-check-circle text-success me-1"></i>
+                                                            <%= field %>
+                                                        </li>
+                                                        <% }) %>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <% }) %>
+                                </div>
+                                <% } else { %>
+                                    <div class="update-history mt-5 text-center text-muted">
+                                        <i class="fas fa-info-circle"></i> No updates recorded yet.
+                                    </div>
+                                <% } %>
+                        </div>
+
+
+                </div>
+    </div>
+
+    <!-- Footer -->
+    <%- include('../views/adminpartials/footer') %>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark"></aside>
+        </div>
+
+        <!-- JS Libraries -->
+        <script src="/plugins/jquery-ui/jquery-ui.min.js"></script>
+        <script>
+            $.widget.bridge('uibutton', $.ui.button);
+        </script>
+        <script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/plugins/chart.js/Chart.min.js"></script>
+        <script src="/plugins/sparklines/sparkline.js"></script>
+        <script src="/plugins/jqvmap/jquery.vmap.min.js"></script>
+        <script src="/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+        <script src="/plugins/jquery-knob/jquery.knob.min.js"></script>
+        <script src="/plugins/daterangepicker/daterangepicker.js"></script>
+        <script src="/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+        <script src="/plugins/summernote/summernote-bs4.min.js"></script>
+        <script src="/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+        <script src="/dist/js/adminlte.js"></script>
+        <script src="/dist/js/demo.js"></script>
+        <script src="/dist/js/pages/dashboard.js"></script>
+
+        <!-- Feather Icons -->
+        <script src="https://unpkg.com/feather-icons"></script>
+        <script> feather.replace(); </script>
+
+</body>
+
+</html>

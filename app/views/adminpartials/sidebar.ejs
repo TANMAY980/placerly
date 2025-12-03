@@ -137,6 +137,40 @@
               </li>
             </ul>
           </li>
+          <li class="nav-item <%= page_name === 'Asset List' ? 'menu-open' : '' %>">
+            <a href="" class="nav-link active">
+              <i class="nav-icon fas fa-briefcase"></i> 
+              <p>
+                Asset Manage
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="<%=generateUrl('admin.asset.access')%>" class="nav-link">
+                  <i class="nav-icon fas fa-wallet"></i>
+                  <p>Asset List</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item <%= page_name === 'Debt List' ? 'menu-open' : '' %>">
+            <a href="" class="nav-link active">
+              <i class="nav-icon fas fa-credit-card"></i>  
+              <p>
+                Debt Manage
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="<%=generateUrl('admin.debt.access')%>" class="nav-link">
+                  <i class="nav-icon fas fa-file-invoice-dollar"></i>
+                  <p>DebtList</p>
+                </a>
+              </li>
+            </ul>
+          </li>
           
         </ul>
       </nav>

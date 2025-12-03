@@ -7,7 +7,7 @@ const auth=require("../../middleware/auth");
 const namedRouter=routelabel(router);
 
 
-
+    
 namedRouter.get("admin.dashboard.access", "/admin/dashboard",auth.jwtauth, auth.isAdmin,adminController.dashboard);
 namedRouter.get("update.password.page","/admin/update/password",auth.jwtauth, auth.isAdmin,adminController.updatepasswordPage);
 namedRouter.post("upload.profile.image","/admin/uploadimage",auth.jwtauth,auth.isAdmin,upload.uploadSingleAdminfile('image'),adminController.uploadImage);

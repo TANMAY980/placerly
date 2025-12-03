@@ -163,10 +163,10 @@ class Admin{
             req.flash("success","Logout successfully")
             res.clearCookie("accessToken");
             res.clearCookie("refreshToken");
-            return res.redirect(generateUrl("user.login.page"));
+            return res.redirect(generateUrl("user.home"));
         } catch (error) {
             req.flash("error", error.message);
-            return res.redirect(generateUrl("user.login.page"));
+            return res.redirect(generateUrl("user.home"));
         }
     };
     
