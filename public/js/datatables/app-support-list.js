@@ -63,8 +63,8 @@ $(function () {
           { data: "phone", title: "Phone" },
           { data: "createdAt", title: "Created On" },
           { data: "status", title: "Status" },
-          { data: "progressStatus", title: "Progress Status"},
-          { data: "pritority", title: "Priority"}, 
+          { data: "progressstatus", title: "Progress Status"},
+          { data: "priority", title: "Priority"}, 
           { data: "resolvedby", title: "Resolved By" },   
           { data: "_id", title: "Actions" },
         ],
@@ -136,7 +136,7 @@ $(function () {
             },
           },
           {
-            targets: 5,
+            targets: 6,
             render: function (data) {
               const colorMap = {
                 low: "badge-light-warning",
@@ -156,6 +156,7 @@ $(function () {
                 <button class="btn btn-sm btn-info view-support" data-id="${data}">
                   <i class="bi bi-eye"></i> Details
                 </button>`;
+                
             },
           },
         ],
@@ -174,8 +175,7 @@ $(function () {
     // Status change modal
     $(document).on("click", ".status-badge", function () {
       const row = $(this).closest("tr");
-      const supportId = row.find(".btn-primary").data("id");
-      
+      const supportId = row.find(".view-support").data("id"); 
       const currentStatus = $(this).text().trim();
       $("#selectedSupportId").val(supportId);
       $("#statusSelect").val(currentStatus);
@@ -184,7 +184,7 @@ $(function () {
     //staus update by id 
     $("#confirmStatusChange").on("click", function () {
       const supportId = $("#selectedSupportId").val();
-      const newStatus = $("#statusSelect").val();
+      const newStatus = $("#statusSelect").val();  
       Swal.fire({
         title: "Confirm Status Change?",
         text: `Change user status to "${newStatus}"?`,
@@ -211,17 +211,17 @@ $(function () {
       });
     });
 
+
     //progress Status change modal
     $(document).on("click", ".progress-status-badge", function () {
       const row = $(this).closest("tr");
-      const supportId = row.find(".btn-primary").data("id");
-      
-      
+      const supportId = row.find(".view-support").data("id");
       const currentStatus = $(this).text().trim();
       $("#selectedSupportId").val(supportId);
       $("#progressstatusSelect").val(currentStatus);
       $("#ProgressStatusModal").modal("show");
     });
+
     //progress status update by id 
     $("#confirmProgressChange").on("click", function () {
       const supportId = $("#selectedSupportId").val();
@@ -238,14 +238,14 @@ $(function () {
             url: `/admin/support/changeprogress/${supportId}`,
             method: "PUT",
             contentType: "application/json",
-            data: JSON.stringify({ status: newStatus }),
+            data: JSON.stringify({ progressstatus: newStatus }),
             success: () => {
               $("#ProgressStatusModal").modal("hide");
-              Swal.fire("Updated!", "Status changed successfully.", "success");
+              Swal.fire("Updated!", "Prgoress Status changed successfully.", "success");
               table.ajax.reload(null, false);
             },
             error: () => {
-              Swal.fire("Error!", "Failed to update status.", "error");
+              Swal.fire("Error!", "Failed to update Prgoress status.", "error");
             },
           });
         }
@@ -255,13 +255,13 @@ $(function () {
     //Priority Status change modal
     $(document).on("click", ".priority-status-badge", function () {
       const row = $(this).closest("tr");
-      const supportId = row.find(".btn-primary").data("id");
-      
+      const supportId = row.find(".view-support").data("id"); 
       const currentStatus = $(this).text().trim();
       $("#selectedSupportId").val(supportId);
       $("#prioritystatusSelect").val(currentStatus);
       $("#PriorityStatusModal").modal("show");
     });
+    
     //Priority staus update by id 
     $("#confirmPriorityChange").on("click", function () {
       const supportId = $("#selectedSupportId").val();
@@ -278,14 +278,14 @@ $(function () {
             url: `/admin/support/changepriority/${supportId}`,
             method: "PUT",
             contentType: "application/json",
-            data: JSON.stringify({ status: newStatus }),
+            data: JSON.stringify({ priority: newStatus }),
             success: () => {
-              $("#statusModal").modal("hide");
-              Swal.fire("Updated!", "Status changed successfully.", "success");
+              $("#PriorityStatusModal").modal("hide");
+              Swal.fire("Updated!", "Priority Status changed successfully.", "success");
               table.ajax.reload(null, false);
             },
             error: () => {
-              Swal.fire("Error!", "Failed to update status.", "error");
+              Swal.fire("Error!", "Failed to update Priority status.", "error");
             },
           });
         }
@@ -316,6 +316,7 @@ $(function () {
       table.ajax.reload();
     });
 
+    
 
   }
 });

@@ -31,7 +31,7 @@ class Email{
             })
         } catch (error) {
             console.log(error);
-      return res.status(500).send("Internal Server Error");
+            return res.status(500).send("Internal Server Error");
         }
     };
 
@@ -64,7 +64,7 @@ class Email{
     async updatePassword(req,res){
         try {
             await mailtransporter.sendMail({
-              from: `"eShop - Where Trends Are Born" <${process.env.SENDER_EMAIL}>`,
+              from: `"Placerly -" <${process.env.SENDER_EMAIL}>`,
               subject: "Your password has been successfully updated",
               html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #ffffff;">
@@ -142,6 +142,23 @@ class Email{
             console.log(error);
             
         }
+    };
+
+    async supportemail(user){
+        try {
+            const sendmail=await mailtransporter.sendMail({
+                from:process.env.EMAIL_FROM,
+                to:user.email,
+                subject:"Support",
+                html:`<p> Dear ${user.firstName},welcome to Placerly support</p>
+                <p> we have recieved your query,we're looking into it we will notify your support status </P>`
+                
+            })
+        } catch (error) {
+            console.log(error);
+            
+        }
+
     }
 }
 module.exports=new Email()

@@ -60,107 +60,108 @@
             <%- include('../views/adminpartials/sidebar') %>
                 <!-- Content Wrapper -->
                 <div class="content-wrapper">
-                    <div class="content-header d-flex justify-content-between">
-                        <div class="container-fluid">
-                            <div class="row mb-3 align-items-center justify-content-between">
-                                <div class="col-sm-6">
-                                    <h3 class="m-0">
-                                        <%=page_name%>
-                                    </h3>
-                                </div>
-                                <div class="col-sm-6 text-end">
-                                    <a href="<%=generateUrl('admin.queries.access')%>" class="btn btn-outline-primary">
-                                        <i class="fas fa-arrow-left me-1"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
 
-                    </div>
+  <div class="content-header d-flex justify-content-between">
+    <div class="container-fluid">
+      <div class="row mb-3 align-items-center justify-content-between">
+        <div class="col-sm-6">
+          <h3 class="m-0"><%= page_name %></h3>
+        </div>
+        <% if (response?.progressstatus === 'resolved') { %>
+        <div class="col-sm-6 text-end">
+          <span class="resolved-by-badge">
+            Resolved By: <%= response?.resolvedby || "Admin" %>
+          </span>
+        </div>
+      <% } %>
+      </div>
+    </div>
+  </div>
 
-                    <!-- Content Header -->
-                    </head>
+  <div class="support-container">
 
-                    <body>
-                        <div class="support-container">
+    <!-- Meta Info -->
+    <p class="blog-meta">
+      <strong>Query by: <%= response.name|| 'Admin' %></strong>
+       |
+        
+      <strong>Date:</strong>
+      <%= response.createdAt ? new Date(response.createdAt).toLocaleString() : 'N/A' %> |
 
-                            <p class="blog-meta">
-                                <strong>Added by:</strong>
-                                <%= response.addedby?.[0]?.name || 'Admin' %> |
-                                    <strong>Date:</strong>
-                                    <%= response.createdAt ? new Date(response.createdAt).toLocaleString() : '' %>
+      <strong>Status:</strong>
+      <span class="badge <%= response.status === 'active' ? 'bg-success' : 'bg-secondary' %>">
+        <%= response.status || 'N/A' %>
+      </span>
 
-                                        <strong>Status:</strong> |
-                                        <span
-                                            class="badge <%= response.status === 'active' ? 'bg-success' : 'bg-secondary' %>">
-                                            <%= response.status %>
-                                        </span> 
-                                        <strong>Status:</strong> |
-                                        <span
-                                            class="badge <%= response.progressstatus === 'processing' ? 'bg-success' : 'bg-secondary' %>">
-                                            <%= response.progressstatus %>
-                                        </span>
-                                        <strong>Status:</strong> |
-                                        <span
-                                            class="badge <%= response.priority === 'high' ? 'bg-danger' : 'bg-secondary' %>">
-                                            <%= response.priority %>
-                                        </span>
-                            </p>
+      <strong>Progress:</strong>
+      <span class="badge <%= response.progressstatus === 'processing' ? 'bg-success' : 'bg-warning' %>">
+        <%= response.progressstatus || 'N/A' %>
+      </span>
 
-                            <h1 class="support-title text-center ">
-                                <%= response.queries %>
-                            </h1>
+      <strong>Priority:</strong>
+      <span class="badge <%= response.priority === 'high' ? 'bg-danger' : 'bg-warning' %>">
+        <%= response.priority || 'N/A' %>
+      </span>
+    </p>
+    <h1 class="support-title text-center">
+            Query Details
+        </h1>
+    <div class="support-description">
+      <%= response.queries || 'No queries available.' %>
+    </div>
 
-                            <!-- Blog Description -->
-                            <div class="support-description">
-                                <%= response.description %>
-                            </div>
+    <% if (response.updatedInfo && response.updatedInfo.length > 0) { %>
 
+      <div class="update-history mt-5">
+        <h4 class="section-title">
+          <i class="fas fa-history me-2"></i> Update History
+        </h4>
 
-                            <% if (response.updatedInfo && response.updatedInfo.length> 0) { %>
-                                <div class="update-history mt-5">
-                                    <h4 class="section-title">
-                                        <i class="fas fa-history me-2"></i> Update History
-                                    </h4>
-                                    <% response.updatedInfo.forEach((update, index)=> { %>
-                                        <div class="update-card">
-                                            <div class="update-header">
-                                                <div class="user-info">
-                                                    <div>
-                                                        <h6>
-                                                            Updated By : <%= update.updatedby?.[0]?.name || 'Admin' %>
-                                                        </h6>
-                                                        <small>
-                                                            <%= update.updatedAt ? new
-                                                                Date(update.updatedAt).toLocaleString() : '' %>
-                                                        </small>
-                                                    </div>
-                                                </div>
-                                                <span class="update-index">#<%= index + 1 %></span>
-                                            </div>
+        <% response.updatedInfo.forEach((update, index) => { %>
+          <div class="update-card">
 
-                                            <div class="update-body">
-                                                <p><strong>Updated Fields:</strong></p>
-                                                <ul>
-                                                    <% update.updatedfield.forEach(field=> { %>
-                                                        <li><i class="fas fa-check-circle text-success me-1"></i>
-                                                            <%= field %>
-                                                        </li>
-                                                        <% }) %>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <% }) %>
-                                </div>
-                                <% } else { %>
-                                    <div class="update-history mt-5 text-center text-muted">
-                                        <i class="fas fa-info-circle"></i> No updates recorded yet.
-                                    </div>
-                                    <% } %>
-                        </div>
-
-
+            <div class="update-header">
+              <div class="user-info">
+                <div>
+                  <h6>
+                    Updated By : <%= response.updatedby || 'Admin' %>
+                  </h6>
+                  <small>
+                    <%= update.updatedAt ? new Date(update.updatedAt).toLocaleString() : 'N/A' %>
+                  </small>
                 </div>
+              </div>
+
+              <span class="update-index">#<%= index + 1 %></span>
+            </div>
+
+            <div class="update-body">
+              <p><strong>Updated Fields:</strong></p>
+              <ul>
+                <% update.updatedfield.forEach(field => { %>
+                  <li>
+                    <i class="fas fa-check-circle text-success me-1"></i>
+                    <%= field %>
+                  </li>
+                <% }) %>
+              </ul>
+            </div>
+
+          </div>
+        <% }) %>
+      </div>
+
+    <% } else { %>
+
+      <div class="update-history mt-5 text-center text-muted">
+        <i class="fas fa-info-circle"></i> No updates recorded yet.
+      </div>
+
+    <% } %>
+
+  </div>
+</div>
+
     </div>
 
     <!-- Footer -->

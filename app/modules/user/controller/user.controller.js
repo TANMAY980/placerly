@@ -1,4 +1,5 @@
 const userRepository=require('../repository/user.repostiroy');
+const supportRepository=require('../../support/repository/support.queries.repository');
 const auth=require('../../../middleware/auth');
 const token=require('../../../helper/generate.Tokens');
 const sendmail=require('../../../helper/send.email');
@@ -39,7 +40,7 @@ class User{
             if(!email || !password) return res.redirect(generateUrl("user.login.page"));
 
             const user=await userRepository.getByField({email});
-            if(!user) return res.redirect(generateUrl("user.register.page"));
+            if(!user) return res.redirect(generateUrl("user.registraion.page"));
 
             const checkPassword=await auth.check_password(password,user.password);
             if(!checkPassword) return res.redirect(generateUrl("user.login.page"));
@@ -146,7 +147,7 @@ class User{
     console.log(error);
     return res.redirect(generateUrl("user.login.page"));
   }
-    }
+    };
 
     async dashboard(req,res){
         try {
@@ -160,6 +161,47 @@ class User{
             return res.redirect(generateUrl('user.home'));
         }
     };
+
+    async supportPage(req,res){
+        try {
+            res.render('user/views/support',{
+                page_title:"Support",
+                page_name:"Support",
+                user:req.user
+            });
+        } catch (error) {
+            req.flash("error","Something went wrong");
+            return res.redirect(generateUrl("user.home"));
+        }
+    };
+
+    async addSupport(req,res){
+        try {
+            const{userId,name,email,phone,queries}=req.body
+            if(!userId || !name || !phone || !email || !queries){
+                req.flash('error',"Required all field");
+                return res.redirect(generateUrl('user.support.page'));
+            };
+            const checkuser=await userRepository.getByField({email});
+            if(!checkuser){
+                req.flash("error","Something went wrong");
+                return res.redirect(generateUrl('user.support.page'))
+            };
+            const support={userId,name,email,phone,queries}
+            const savesupport=await supportRepository.save(support);
+            if(!savesupport){
+                req.flash("error","Failed to submit query");
+                return res.redirect(generateUrl('user.support.page'));
+            };
+            req.flash("success","Successfully submited your query");
+            await sendmail.supportemail(checkuser);
+            return res.redirect(generateUrl('user.support.page'));
+        } catch (error) {
+            console.log(error);
+            return res.redirect(generateUrl('user.support.page'));
+        }
+    };
+
 
     async updatepasswordPage(req,res){
             try {

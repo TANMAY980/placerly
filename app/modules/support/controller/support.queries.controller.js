@@ -5,7 +5,7 @@ class supportquery{
 
     async list(req,res){
         try {
-            const [total,inactive,active,pending,processing,resolved,low,high,medium]=await Promise.all([
+            const [total,active,inactive,pending,processing,resolved,low,high,medium]=await Promise.all([
                queriesRepository.getCountByParam({isDeleted:false}),
                queriesRepository.getCountByParam({isDelted:false,status:"active"}),
                queriesRepository.getCountByParam({isDeleted:false,status:"inactive"}),
@@ -63,15 +63,16 @@ class supportquery{
 
     async getSupportDetailsById(req,res){
       try{
-        const support=await queriesRepository.getdetailsById({_id:new mongoose.Types.ObjectId(req.params.id)});
-        if (!support) {
-        req.falsh("error", "Blog details not found");
+        const data=await queriesRepository.getdetailsById({_id:new mongoose.Types.ObjectId(req.params.id)});
+        if (!data) {
+        req.flash("error", "Blog details not found");
         return res.redirect("admin.queries.access");
       }
       res.render("support/views/details",{
         page_title:"Query Details",
         page_name:"Query Details",
         response:data,
+        user:req.user
       })
       }catch(error){
         req.flash("error", error.message);
@@ -82,9 +83,10 @@ class supportquery{
     async changestatus(req,res){
       try{
         const{status}=req.body;
-        const queryId=req.params.id;
-
-        const checkstatus=await queriesRepository.getById(queryId);
+        if(!status) return res.status(400).json({status:false,message:"Invalid status value"})
+        const supportId=req.params.id;
+        const checkstatus=await queriesRepository.getById(supportId);
+        if(!checkstatus) return res.status(400).json({status:false,message:"Failed To get Support"})
         const updatedFields=[];
         if(checkstatus && checkstatus!==status)updatedFields.push(`status:${status}`);
 
@@ -93,7 +95,7 @@ class supportquery{
         };
         if(updatedFields.length){
           updateOps.$push={
-            updateInfo:{
+            updatedInfo:{
                 updatedfield:updatedFields,
                 updatedby: req.user?req.user.id:null,
                 updatedAt:new Date()
@@ -101,7 +103,7 @@ class supportquery{
           }
         };
 
-        const statusdata=await queriesRepository.updateById(updateOps, new mongoose.Types.ObjectId(queryId));
+        const statusdata=await queriesRepository.updateById(updateOps, new mongoose.Types.ObjectId(supportId));
         if(!statusdata) return res.status(400).json({status:false,message:"Failed To Change Qury status"});
         return res.status(200).json({status:true,message:"Queries Status changed Successfully"})
       }catch(error){
@@ -109,47 +111,22 @@ class supportquery{
       }
     };
 
-    async priorityChange(req,res){
-      try {
-        const{priority}=req.body;
-        const queryId=req.params.id
-        const checkpriority=await queriesRepository.getById(queryId);
-
-        const updatedFields=[];
-        if(checkpriority && checkpriority.priority!==priroty)  updatedFields.push(`priority:${priority}`);
-
-        const updateOps={
-          $set:{priority}
-        };
-        if(updatedFields.length){
-          updateOps.$push={
-              updateInfo:{
-                updatedfield:updatedFields,
-                updatedby: req.user?req.user.id:null,
-                updatedAt:new Date()
-              }
-          }
-        };
-
-        const data=await queriesRepository.updateById(updateOps, new mongoose.Types.ObjectId(queryId));
-        if(!data) return res.status({status:false,message:"Failed To change priority status"});
-        return res.status({status:true,message:"Successfully changed Priority Status"})
-      } catch (error) {
-        return res.status(500).jsno({status:false,message:error.message});
-      }
-    };
-
     async progressChange(req,res){
       try {
-        const{progressstatus}=req.body;
+        const{progressstatus}=req.body;        
+        if(!progressstatus)return res.status(400).json({status:false,message:" Progress Status value required "});
         const queryId=req.params.id;
         const checkProgressStatus=await queriesRepository.getById(queryId);
+        if(!checkProgressStatus) return res.status(400).json({status:false,message:"Failed To get Support"});
         const updatedFields=[];
-        if(checkProgressStatus && checkProgressStatus.progressstatus!==progressstatus) updatedFields.push(`progressstatus:${progressstatus}`)
-        
+        if(checkProgressStatus && checkProgressStatus.progressstatus!==progressstatus) updatedFields.push(`progressstatus:${progressstatus}`);
         const updateOps={
           $set:{progressstatus},
-        } 
+        };
+        if(progressstatus==="resolved"){
+            updateOps.$set.resolvedby=req.user?req.user.id:null
+            updateOps.$set.status="inactive"
+        }; 
         if (updatedFields.length > 0) {
           {
             updateOps.$push={
@@ -162,12 +139,47 @@ class supportquery{
           }
         }
         const data=await queriesRepository.updateById(updateOps, new mongoose.Types.ObjectId(queryId));
+        
         if(!data) return res.status(400).json({status:false,message:"Failed to change Query Progress Status "});
         return res.status(200).json({status:true,message:"Successfully Query Progress Status Changed"});
       } catch (error) {
         return res.status(500).json({ status: true, message: error.message });
       }
     };
+
+    async priorityChange(req,res){
+      try {
+        const{priority}=req.body;
+        if(!priority) return res.status(400).json({status:false,message:"Failed toget priority value"});
+        const queryId=req.params.id
+        const checkpriority=await queriesRepository.getById(queryId);
+        if(!checkpriority) return res.status(400).json({status:false,message:"Failed To get Support"});
+
+        const updatedFields=[];
+        if(checkpriority && checkpriority.priority!==priority) updatedFields.push(`priority:${priority}`);
+
+        const updateOps={
+          $set:{priority}
+        };
+        if(updatedFields.length){
+          updateOps.$push={
+              updatedInfo:{
+                updatedfield:updatedFields,
+                updatedby: req.user?req.user.id:null,
+                updatedAt:new Date()
+              }
+          }
+        };
+        
+        const data=await queriesRepository.updateById(updateOps, new mongoose.Types.ObjectId(queryId));
+        if(!data) return res.status(400).json({status:false,message:"Failed To change priority status"});
+        return res.status(200).json({status:true,message:"Successfully changed Priority Status"})
+      } catch (error) {
+        return res.status(500).json({status:false,message:error.message});
+      }
+    };
+
+    
 
 };
 module.exports=new supportquery();

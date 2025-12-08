@@ -4,9 +4,10 @@ const{Schema,model}=mongoose;
 
 const supportSchema=new Schema({
     userId:{type:Schema.Types.ObjectId,ref:"user"},
+    name:{type:String,required:true},
     email:{type:String,required:true,index:true},
+    phone:{type:String,required:true,index:true},
     queries:{type:String,required:true},
-    description:{type:String,required:true},
     progressstatus:{type:String,enum:["pending","processing","resolved"],default:"pending"},
     status:{type:String,enum:["active","inactive"],default:"active"},
     priority:{type:String,enum:["low","medium","high"],default:"medium"},

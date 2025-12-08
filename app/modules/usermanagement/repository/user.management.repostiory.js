@@ -13,7 +13,7 @@ class usermanagementRepository extends baseRepository {
       let conditions = {};
       let and_clauses = [];
 
-      and_clauses.push({ isDeleted: false });
+      and_clauses.push({ isDeleted: false ,role:{$ne:"admin"}});
 
       // Search Filter
       if (_.isObject(req.body.search) && _.has(req.body.search, "value")) {

@@ -22,7 +22,7 @@ class supportqueriesRepository extends baseRepository{
               and_clauses.push({
               $or: [
                 { email: { $regex: searchValue, $options: "i" } },
-                { "userDetails.contactNumber": { $regex: searchValue, $options: "i" } },
+                { phone: { $regex: searchValue, $options: "i" } },
               ],
             });
             }
@@ -46,9 +46,7 @@ class supportqueriesRepository extends baseRepository{
           if (req.body.status && req.body.status.trim() !== "") {
             and_clauses.push({ status: req.body.status.trim() });
           }
-
-    
-    
+  
           conditions["$and"] = and_clauses;
     
           // Sort Operator
@@ -69,29 +67,28 @@ class supportqueriesRepository extends baseRepository{
             {
                 $lookup:{
                     from:"users",
-                    localField:"userId",
+                    localField:"updatedInfo.updatedby",
                     foreignField:"_id",
                     as:"userDetails"
                 },
             },
             {
-                $unwind:{
-                    preserveNullAndEmptyArrays:true,
-                    path:"$userDetails"
+            $unwind:{
+              preserveNullAndEmptyArrays:true,
+              path:"$userDetails"
             }
-            },
+          },
             {
               $project: {
                 _id: 1,
-                name:{$concat:["$userDetails.firstName"," ","$userDetails.lastName"]},
-                email:"$userDetails.email",
-                phone:"$userDetails.contactNumber",
+                name:1,
+                email:1,
+                phone:1,
                 queries: 1,
-                description: 1,
                 progressstatus: 1,
                 status: 1,
                 priority:1,
-                resolvedby: 1,
+                resolvedby:{$ifNull:[{$concat:["$userDetails.firstName"," ","$userDetails.lastName"]},"N/A"]},
                 createdAt:1,
               },
             },
@@ -118,31 +115,43 @@ class supportqueriesRepository extends baseRepository{
           {
             $lookup:{
               from:"users",
-              localField:"userId",
+              localField:"updatedInfo.updatedby",
               foreignField:"_id",
               as:"userDetails",
             }
           },{
             $unwind:{
               preserveNullAndEmptyArrays:true,
-              as:"$userDetails"
+              path:"$userDetails"
+            }
+          },{
+            $lookup:{
+              from:"users",
+              localField:"resolvedby",
+              foreignField:"_id",
+              as:"userInfo",
+            }
+          },{
+            $unwind:{
+              preserveNullAndEmptyArrays:true,
+              path:"$userInfo"
             }
           },{
             $project:{
-              name:{$concat:["$userDetails.firstName"," ","$userDetails.lastName"]},
-              email:"$userDetails.email",
-              phone:"$userDetails.contactNumber",
+              name:1,
+              email:1,
+              phone:1,
               queries: 1,
-              description: 1,
               progressstatus: 1,
               status: 1,
               priority:1,
-              resolvedby: 1,
+              updatedInfo:1,
+              updatedby:{$concat:["$userDetails.firstName"," ","$userDetails.lastName"]},
+              resolvedby:{$concat:["$userInfo.firstName"," ","$userInfo.lastName"]},
               createdAt:1,
-              
             }
           }
-        ]);
+        ]); 
         return quriesdetails.length ? quriesdetails[0] : null ;
       } catch (error) {
         throw error

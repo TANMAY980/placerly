@@ -13,7 +13,7 @@ namedRouter.get("update.password.page","/admin/update/password",auth.jwtauth, au
 namedRouter.post("upload.profile.image","/admin/uploadimage",auth.jwtauth,auth.isAdmin,upload.uploadSingleAdminfile('image'),adminController.uploadImage);
 namedRouter.post("profile.image.delete","/admin/profileimage/delete",auth.jwtauth,auth.isAdmin,adminController.deleteImage);
 namedRouter.get("profile.details.page","/admin/getdetails",auth.jwtauth,auth.isAdmin,adminController.getDetailsPage)
-namedRouter.post("update.password","/admin/updatepassword",auth.jwtauth,auth.isAdmin,adminController.updatePassword);
+namedRouter.post("update.password","/admin/updatepassword",auth.jwtauth,adminController.updatePassword);
 namedRouter.post("admin.logout","/admin/logout",adminController.logout);
 
 
