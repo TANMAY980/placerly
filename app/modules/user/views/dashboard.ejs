@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Placerly | Login</title>
+  <title>Placerly | Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!----Flash style-->
   <link rel="stylesheet" href="/app-assets/css/pages/flash.css">
@@ -96,7 +96,7 @@
   <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top px-4 px-lg-5">
     <a href="<%=generateUrl('user.home')%>" class="navbar-brand d-flex align-items-center">
       <h1 class="m-0">
-        <img class="img-fluid me-3" src="/images/icon/icon-02-primary.png" alt="" />Insure
+        <img class="img-fluid me-3" src="/images/icon/icon-02-primary.png" alt="" />Placerly
       </h1>
     </a>
     <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -109,32 +109,45 @@
         <a href="service.html" class="nav-item nav-link">Blogs</a>
       </div>
     </div>
-  </nav>
-  <div class="login-container d-flex align-items-center justify-content-center">
-    <div class="d-flex justify-content-center">
-      <div style="width: 300px">
-        <!-- Display success message if available -->
-        <% if (successMessage.length> 0) { %>
-          <div class="toast-message toast-success">
-            <span>
-              <%= successMessage[0] %>
-            </span>
-            <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
-          </div>
-          <% } %>
+    
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-user-circle"></i> Profile
+        </button>
 
-            <% if (errorMessage.length> 0) { %>
-              <div class="toast-message toast-error">
-                <span>
-                  <%= errorMessage[0] %>
-                </span>
-                <button onclick="this.parentElement.remove()">✖</button>
-              </div>
-              <% } %>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li>
+            <a href="<%= generateUrl('user.details') %>" class="dropdown-item">
+              <i class="fas fa-id-badge"></i> Profile Details
+            </a>
+          </li>
 
+          <li>
+            <a href="<%= generateUrl('user.updatepassword.page') %>" class="dropdown-item">
+              <i class="fas fa-key"></i> Update Password
+            </a>
+          </li>
+
+          <li>
+            <a href="<%=generateUrl('user.support.page')%>" class="dropdown-item">
+              <i class="fas fa-sms"></i> Help & Support
+            </a>
+          </li>
+
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+
+          <li>
+            <form action="<%=generateUrl('user.logout')%>" method="POST" class="m-0">
+              <button type="submit" class="dropdown-item text-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </button>
+            </form>
+          </li>
+        </ul>
       </div>
-    </div>
-  </div>
+  </nav>
   <div class="container py-5">
   <h2 class="fw-bold text-center mb-4">User Dashboard</h2>
 

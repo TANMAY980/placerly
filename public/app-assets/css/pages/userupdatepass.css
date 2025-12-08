@@ -7,7 +7,7 @@ html {
 
 .forgot-container {
     min-height: 100vh;
-    background: url("/images/registration.jpg") no-repeat center center/cover;
+    background: url("/images/password.jpg") no-repeat center center/cover;
     position: relative;
     display: flex;
     justify-content: center;
@@ -69,7 +69,20 @@ html {
     color: #fff;
 }
 
+.btn-reset {
+    background: linear-gradient(135deg, #0d6efd, #6610f2);
+    border: none;
+    font-weight: 600;
+    color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
 
+.btn-reset:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
 
 .back-link a {
     color: #ccc;

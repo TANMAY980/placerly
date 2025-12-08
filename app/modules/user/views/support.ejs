@@ -100,6 +100,45 @@
         <a href="service.html" class="nav-item nav-link">Blogs</a>
       </div>
     </div>
+    <div class="mx-2">
+        <a href="<%=generateUrl('user.dashboard')%>">
+          <button class="btn btn-primary" type="button" aria-expanded="false">
+            <i class="fas fa-user-cog"></i> Dashboard
+          </button>
+        </a>
+      </div>
+
+
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fas fa-user-circle"></i> Profile
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li>
+            <a href="<%= generateUrl('user.details') %>" class="dropdown-item">
+              <i class="fas fa-id-badge"></i> Profile Details
+            </a>
+          </li>
+
+          <li>
+            <a href="<%= generateUrl('user.updatepassword.page') %>" class="dropdown-item">
+              <i class="fas fa-key"></i> Update Password
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+
+          <li>
+            <form action="<%=generateUrl('user.logout')%>" method="POST" class="m-0">
+              <button type="submit" class="dropdown-item text-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </button>
+            </form>
+          </li>
+        </ul>
+      </div>
   </nav>
   <div class="forgot-container">
 

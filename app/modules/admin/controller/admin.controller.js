@@ -48,7 +48,7 @@ class Admin{
         try {
             const userDetails=await adminRepository.userDetails({_id:new mongoose.Types.ObjectId(req.user.id)});   
             if(!userDetails){
-                req.flash("success","Failed To load User Details");
+                req.flash("error","Failed To load User Details");
                 return res.redirect(generateUrl("admin.dashboard.access"));
             };
             res.render("admin/views/details",{

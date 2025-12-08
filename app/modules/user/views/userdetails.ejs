@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Placerly | Update password</title>
+  <title>Placerly | profile details</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/app-assets/css/pages/user.login.css">
   <!----Flash style-->
@@ -31,7 +31,7 @@
 
   <!-- Template Stylesheet -->
   <link href="/app-assets/css/pages/style.css" rel="stylesheet" />
-  <link href="/app-assets/css/pages/userupdatepass.css" rel="stylesheet" />
+  <link href="/app-assets/css/pages/details.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -113,9 +113,9 @@
         </button>
 
         <ul class="dropdown-menu dropdown-menu-end">
-           <li>
-            <a href="<%= generateUrl('user.details') %>" class="dropdown-item">
-              <i class="fas fa-id-badge"></i> Profile Details
+          <li>
+            <a href="<%= generateUrl('user.updatepassword.page') %>" class="dropdown-item">
+              <i class="fas fa-key"></i> Update Password
             </a>
           </li>
 
@@ -140,35 +140,94 @@
       </div>
   </nav>
   <div class="forgot-container">
+    <div class="content-body">
+            <div class="card">
+              <!-- Card Body -->
+              <div class="card-body">
+                <div class="row w-100 align-items-center">
 
-  <div class="forgot-card">
+                      <div class="col-md-8">
+      <div class="d-flex flex-column">
 
-    <h3>Update Password</h3>
-    <form action="<%=generateUrl('user.update.password')%>" method="POST">
-      <div class="input-group mt-3">
-        <span class="input-group-text">
-            <i class="fas fa-key"></i>
-        </span>
-        <input type="password" class="form-control" id="prevPassword" name="prevPassword"
-          placeholder="Enter previous password" required>
+        <p class="fw-bold mb-1">Registered On: <%= response?.createdAt || "NA" %></p>
+        <p class="fw-bold mb-1">First Name: <%= response?.firstName || "NA" %></p>
+        <p class="fw-bold mb-1">Last Name: <%= response?.lastName || "NA" %></p>
+        <p class="fw-bold mb-1">Email Address: <%= response?.email || "NA" %></p>
+        <p class="fw-bold mb-1">Contact Number: <%= response?.contactNumber || "NA" %></p>
+
+        <p class="fw-bold mb-1">
+          All Subscription:
+          <% if(response?.subscription?.length) { %>
+            <% response.subscription.forEach(sub => { %>
+              <span class="badge badge-info">
+                <%= sub.name %> - <%= sub.orgName %>
+              </span>
+            <% }) %>
+          <% } else { %>
+            NA
+          <% } %>
+        </p>
+
+        <p class="fw-bold mb-1">
+          Status:
+          <% const statusClass = {
+            active: "badge-light-success",
+            inactive: "badge-light-secondary",
+            banned: "badge-light-danger"
+          }[response?.status] || "badge-light-secondary"; %>
+          <span class="badge <%= statusClass %>"><%= response?.status %></span>
+        </p>
+
+        <p class="fw-bold mb-1">
+          Subscription:
+          <% const subClass = response?.subscribed === "subscribed"
+            ? "badge-light-success" : "badge-light-warning"; %>
+          <span class="badge <%= subClass %>"><%= response?.subscribed %></span>
+        </p>
+
+        <p class="fw-bold mb-1">
+          Verify Status:
+          <% const verifyClass = response?.is_verified ? "badge-light-success" : "badge-light-danger"; %>
+          <span class="badge <%= verifyClass %>">
+            <%= response?.is_verified ? "Verified" : "Not Verified" %>
+          </span>
+        </p>
+
       </div>
-      <div class="input-group mt-3">
-        <span class="input-group-text">
-            <i class="fas fa-key"></i>
-        </span>
-        <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="Enter new password"
-          required minlength="6">
-      </div>
-      <div class="input-group mt-3">
-       <span class="input-group-text">
-            <i class="fas fa-key"></i>
-        </span>
-        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
-          placeholder="Confirm new password" required minlength="6">
-      </div>
-      <button type="submit" class="btn btn-primary btn-block mt-3">Update</button>
-    </form>
-  </div>
+    </div>
+
+    <div class="col-md-4 d-flex flex-column align-items-center">
+        <div class="profile-upload-box">
+            <img src="<%= response?.image || '/uploads/default-user.png' %>" id="previewImage" class="profile-big-img"
+                alt="Profile Image">
+            <form action="<%= generateUrl('upload.image') %>" method="POST" enctype="multipart/form-data"
+                class="upload-form">
+                <label for="uploadImage" class="upload-overlay" title="Upload Image">
+                    <i class="fas fa-camera"></i>
+                </label>
+        
+                <input type="file" id="uploadImage" name="image" accept="image/*" hidden onchange="previewProfile(this)">
+            </form>
+        
+            <% if(response?.image) { %>
+                <form action="<%= generateUrl('user.profileimage.delete') %>" method="POST" class="delete-form">
+                    <button type="submit" class="delete-overlay" title="Delete Image">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+                <% } %>
+        
+        </div>
+    
+        <h5 class="mt-2">
+            <%= user.name %>
+        </h5>
+    
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
 
 </div>
   <!---Footer-->
@@ -237,6 +296,19 @@
   <script src="/lib/counterup/counterup.min.js"></script>
   <!---Flash Js-->
   <script src="/js/flash.js"></script>
+  <script>
+    function previewProfile(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      document.getElementById("previewImage").src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+    input.form.submit();
+  }
+
+}
+  </script>
 </body>
 
 </html>
