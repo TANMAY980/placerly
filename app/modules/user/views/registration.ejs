@@ -99,6 +99,7 @@
         <a href="service.html" class="nav-item nav-link">Faqs</a>
         <a href="service.html" class="nav-item nav-link">Blogs</a>
       </div>
+      <a href="<%= generateUrl('user.login.page') %>" class="btn btn-primary mx-1">Sign In</a>
     </div>
   </nav>
   <div class="forgot-container">
@@ -106,7 +107,7 @@
   <div class="forgot-card">
 
     <h3>Register</h3>
-    <form id="regForm" novalidate>
+    <form id="regForm" action="<%=generateUrl('user.register')%>"method="Post">
       <div class="grid">
         <div class="input-group mt-3">
           <span class="input-group-text">
@@ -133,7 +134,7 @@
           <span class="input-group-text">
             <i class="fas fa-phone"></i>
           </span>
-          <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. +91 98765 43210" required />
+          <input id="phone" name="contactNumber" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. +91 98765 43210" required />
         </div>
 
         <div class="input-group mt-3">
@@ -152,6 +153,15 @@
           <div class="row">
             <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Enter confirm password" autocomplete="new-password" required />
           </div>
+        </div>
+        <div class="form-group terms-condition">
+          <label class="terms-label">
+            <input type="checkbox" name="terms_condition" value="true" required>
+            I agree to the
+            <a href="/terms-and-conditions" target="_blank">Terms & Conditions</a>
+            and
+            <a href="/privacy-policy" target="_blank">Privacy Policy</a>.
+          </label>
         </div>
 
       </div>

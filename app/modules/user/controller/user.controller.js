@@ -33,6 +33,43 @@ class User {
     }
   };
 
+  async register(req,res){
+    try {
+      const{firstName,lastName,email,contactNumber,password,confirmPassword,terms_condition}=req.body;
+      if(!firstName || !lastName || !email || !contactNumber || !password || !confirmPassword || !terms_condition){
+        req.flash("error","Please Enter all the required Fields");
+        return res.redirect(generateUrl('user.registraion.page'));
+      };
+      const checkuser=await userRepository.getByField({email});
+      if(checkuser){
+        req.flash("error","Your email already registered Please try with new email");
+        return res.redirect(generateUrl('user.login.page'));
+      };
+      if(password !==confirmPassword){
+        req.flash("error","Please enter both password same");
+        return res.redirect(generateUrl('user.registraion.page'));
+      };
+      const encryptPass=await auth.encrypt_password(password);
+      if(!encryptPass){
+        req.flash("error","Something went wrong");
+        return res.redirect(generateUrl('user.registraion.page'));
+      };
+      const userdata={firstName,lastName,email,contactNumber,password:encryptPass,confirmPassword,terms_condition};
+      const saveuser=await userRepository.save(userdata);
+      if(!saveuser){
+        req.flash("error","Registration Failed Try again");
+        return res.redirect(generateUrl('user.registraion.page'));
+      };
+      req.flash("success","Registration Successful");
+      return res.redirect(generateUrl('user.login.page'));
+    } catch (error) {
+      console.log(error);
+      req.flash("error",error.message);
+      return res.redirect(generateUrl('user.registraion.page'));
+      
+    }
+  };
+
   async login(req, res) {
     try {
       const { email, password } = req.body;

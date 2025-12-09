@@ -11,7 +11,7 @@ const userSchema=new Schema({
     previous_Password:[{type:String,default:''}],
     role:{type:String,enum:["admin","user"],default:"user"},
     image:{type:String,default:''},
-    terms_conditon:{type:Boolean,required:true,default:false},
+    terms_condition:{type:Boolean,required:true},
     is_verified:{type:Boolean,default:false},
     subscription:[{type:mongoose.Schema.Types.ObjectId,ref:"subscription"}],
     subscribed:{type:Boolean,default:false},
