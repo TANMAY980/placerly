@@ -51,13 +51,18 @@ class Assets{
         }
     };
 
-    async createDebtAcoount(req,res){
+    async addDebtAcoount(req,res){
       try {
-        const{ name,accounttype}=req.body; 
+        const{name,accounttype}=req.body;  
+        const userId=new mongoose.Types.ObjectId(req.user.id); 
         const check=await debtsRepository.getByField({name});
-        if(check) return res.status(409).json({status:false,messaeg:"Debet account already exists"});
+        if(check) {
+          if(check.name===name && check.accounttype===accounttype && check.userId.toString()===userId.toString()){
+            return res.status(409).json({status:false,message:"Debt account already exists"});
+          }   
+        };  
 
-        const plan={name,accounttype,addedby:req.user.id};
+        const plan={name,accounttype,userId};
         const debtdata=await debtsRepository.save(plan);
 
         if(!debtdata) return res.status(400).json({status:false,message:"Failed To create Debt account"});

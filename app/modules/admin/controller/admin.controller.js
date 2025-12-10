@@ -108,6 +108,24 @@ class Admin{
         }
     };
 
+    async updateProfile(req,res){
+        try {
+            const {firstName,lastName,email,contactNumber}=req.body;        
+            const user={firstName,lastName,email,contactNumber};
+            if(req.file){
+              user.image=req.file.path;
+            }
+            const saveuser=await adminRepository.updateById(user,new mongoose.Types.ObjectId(req.user.id));
+            if(!saveuser){
+              return res.status(400).json({status:false,message:"Failed to update Profile details"})
+            };
+            return res.status(200).json({status:true,message:"Successfully updated Profile details"})
+        } catch (error) {
+          console.log(error);
+          return res.status(500).json({status:false,message:"Failed To update Profile Details"});
+        }
+    };
+
     async uploadImage(req,res){
         try {            
             if(!req.file){

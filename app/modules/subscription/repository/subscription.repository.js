@@ -150,6 +150,29 @@ class subscriptionRepository extends baseRepository{
       };
     };
 
+    async getallsubscription(filter){
+      try {
+        const data=await subScriptionmodel.aggregate([
+          {
+            $match:filter
+          },
+          {
+            $project:{
+              orgname:1,
+              name:1,
+              details:1,
+              charges:1,
+              inclusions:1,
+              duration:1,
+            }
+          }
+        ])
+        return data.length?data:[]
+      } catch (error) {
+        throw error
+      }
+    }
+
     
 };    
 module.exports=new subscriptionRepository();

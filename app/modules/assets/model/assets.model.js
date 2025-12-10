@@ -3,15 +3,10 @@ const mongooseAggregatePaginate = require('mongoose-aggregate-paginate-v2');
 const {Schema,model}=mongoose;
 
 const assetSchema=new Schema({
-    name:{type:String,required:true,index:true},
+    name:{type:String,enum:["Barclays","Lloyds","Marcus","Natwest","HSBC","Monzo","Starling","Revoult","Vanguard","Moneyfarm","AJ Bell","Freetrade","Nutmeg","Wealthify","Hargreaves Lansdown","Interactive Investor"]},
     accounttype:{type:String,enum:["cash","stock"]},
     status:{type:String,enum:["active","inactive"],default:"active"},
-    addedby:{type:Schema.Types.ObjectId,ref:"user"},
-    updatedInfo:[{
-        updatedfield:[{type:String,default:""}],
-        updatedby:{type:Schema.Types.ObjectId,ref:"user"},
-        updatedAt:{type:Date,default:Date.now},
-    }],
+    userId:{type:Schema.Types.ObjectId,ref:"users"},
     isDeleted:{type:Boolean,default:false}
 },{timestamps:true,versionKey:false});
 

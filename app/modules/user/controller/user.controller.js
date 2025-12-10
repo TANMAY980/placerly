@@ -1,5 +1,6 @@
 const userRepository=require('../repository/user.repostiroy');
 const supportRepository=require('../../support/repository/support.queries.repository');
+const subscriptionRepository=require('../../subscription/repository/subscription.repository');
 const auth=require('../../../middleware/auth');
 const token=require('../../../helper/generate.Tokens');
 const sendmail=require('../../../helper/send.email');
@@ -243,6 +244,32 @@ class User {
     }
   };
 
+  async subscriptionPage(req,res){
+    try {
+      const data=await subscriptionRepository.getallsubscription({isDeleted:false});
+      if (req.user) {
+        res.render('user/views/subscription',{
+          page_title:"Subscription page",
+          page_name:"Subscription page",
+          user:req.user || null,
+          plans:data
+      })
+      } else {
+        res.render('user/views/subscription',{
+          page_title:"Subscription page",
+          page_name:"Subscription page",
+          user: null,
+          plans:data
+      })
+      }
+    } catch (error) {
+      console.log(error);
+      req.flahs("error","Failed to load Subscription Page");
+      return res.redirect(generateUrl('user.home'))
+      
+    }
+  };
+
   async updatepasswordPage(req, res) {
     try {
       const userDetails = await userRepository.userDetails({ _id: new mongoose.Types.ObjectId(req.user.id)});
@@ -259,6 +286,24 @@ class User {
       console.log(error);
       req.flash("error", "Something went Wrong");
       return res.redirect(generateUrl("user.home"));
+    }
+  };
+
+  async updateProfile(req,res){
+    try {
+        const {firstName,lastName,email,contactNumber}=req.body;        
+        const user={firstName,lastName,email,contactNumber};
+        if(req.file){
+          user.image=req.file.path;
+        }
+        const saveuser=await userRepository.updateById(user,new mongoose.Types.ObjectId(req.user.id));
+        if(!saveuser){
+          return res.status(400).json({status:false,message:"Failed to update Profile details"})
+        };
+        return res.status(200).json({status:true,message:"Successfully updated Profile details"})
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({status:false,message:"Failed To update Profile Details"});
     }
   };
 
@@ -455,7 +500,7 @@ class User {
         req.flash("error","Failed To Upload Profile Image");
         return res.redirect(generateUrl('profile.details.page'));
     }
-    };
+  };
 
   async getDetailsPage(req,res){
     try {
@@ -474,7 +519,77 @@ class User {
             req.flash("error","something went wrong")
             return res.redirect(generateUrl("user.home"));
         }
-    };
+  };
+
+  async assetDetailsPage(req,res){
+    try {
+      res.render('user/views/assetdetails',{
+        page_title:"Asset details",
+        page_name:"Asset details",
+        user:req.user,
+      })
+    } catch (error) {
+      console.log(error);
+      req.flash("error","Failed To load Asset Details Page");
+      return res.render(genrateUrl('user.dashboard'));
+    }
+  };
+
+  async debtDetailsPage(req,res){
+    try {
+      res.render('user/views/debtsdetails',{
+        page_title:"Debt details",
+        page_name:"Debt details",
+        user:req.user,
+      })
+    } catch (error) {
+      console.log(error);
+      req.flash("error","Failed To load Debts Details Page");
+      return res.render(genrateUrl('user.dashboard'));
+    }
+  };
+
+  async insuranceDetailsPage(req,res){
+    try {
+      res.render('user/views/insurancedetails',{
+        page_title:"Insurance details",
+        page_name:"Insurance details",
+        user:req.user,
+      })
+    } catch (error) {
+      console.log(error);
+      req.flash("error","Failed To load Insurance Details Page");
+      return res.render(genrateUrl('user.dashboard'));
+    }
+  };
+
+  async utilitiesDetailsPage(req,res){
+    try {
+      res.render('user/views/utilitiesdetails',{
+        page_title:"Utility details",
+        page_name:"Utility details",
+        user:req.user,
+      })
+    } catch (error) {
+      console.log(error);
+      req.flash("error","Failed To load Utility Details Page");
+      return res.render(genrateUrl('user.dashboard'));
+    }
+  };
+
+  async transitionDetailsPage(req,res){
+    try {
+      res.render('user/views/transitiondetails',{
+        page_title:"Transition details",
+        page_name:"Transition details",
+        user:req.user,
+      })
+    } catch (error) {
+      console.log(error);
+      req.flash("error","Failed To load Transition Details Page");
+      return res.render(genrateUrl('user.dashboard'));
+    }
+  };
 
   async uploadImage(req,res){
      try {
@@ -501,7 +616,7 @@ class User {
             req.flash("error", "Failed To Upload Profile Image");
             return res.redirect(generateUrl("user.details"));
         }
-    };
+  };
     
   async deleteImage(req,res){
     try {
@@ -522,7 +637,7 @@ class User {
             req.flash("error",error.message);
             return res.redirect(generateUrl('user.details'));
         }
-    };
+  };
 
   async logout(req, res) {
     try {

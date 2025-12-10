@@ -3,9 +3,9 @@ const mongooseAggregatePaginate = require('mongoose-aggregate-paginate-v2');
 const {Schema,model}=mongoose;
 
 const appointmentSchema=new Schema({
-    Name:{type:String,required:true,index:true},
+    name:{type:String,required:true,index:true},
     email:{type:String,required:true,index:true},
-    number:{type:String,required:true},
+    phone:{type:String,required:true},
     serviceType:{type:String,required:true},
     message:{type:String,required:true},
     status:{type:String,enum:["active","inactive"],default:"active"},

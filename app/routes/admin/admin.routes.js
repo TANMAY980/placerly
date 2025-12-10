@@ -11,6 +11,7 @@ const namedRouter=routelabel(router);
 namedRouter.get("admin.dashboard.access", "/admin/dashboard",auth.jwtauth, auth.isAdmin,adminController.dashboard);
 namedRouter.get("update.password.page","/admin/update/password",auth.jwtauth, auth.isAdmin,adminController.updatepasswordPage);
 namedRouter.post("upload.profile.image","/admin/uploadimage",auth.jwtauth,auth.isAdmin,upload.uploadSingleAdminfile('image'),adminController.uploadImage);
+namedRouter.post("update.profiledetails","/admin/update/profiledetails",auth.jwtauth,auth.isAdmin,upload.uploadSingleUserfile('image'),adminController.updateProfile);
 namedRouter.post("profile.image.delete","/admin/profileimage/delete",auth.jwtauth,auth.isAdmin,adminController.deleteImage);
 namedRouter.get("profile.details.page","/admin/getdetails",auth.jwtauth,auth.isAdmin,adminController.getDetailsPage)
 namedRouter.post("update.password","/admin/updatepassword",auth.jwtauth,adminController.updatePassword);

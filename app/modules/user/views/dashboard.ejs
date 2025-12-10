@@ -27,6 +27,7 @@
 
   <!-- Customized Bootstrap Stylesheet -->
   <link href="/app-assets/css/pages/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!-- Template Stylesheet -->
   <link href="/app-assets/css/pages/style.css" rel="stylesheet" />
@@ -34,9 +35,7 @@
 </head>
 
 <body>
-  <div
-      class="container-fluid bg-dark text-white-50 py-2 px-0 d-none d-lg-block"
-    >
+  <div class="container-fluid bg-dark text-white-50 py-2 px-0 d-none d-lg-block">
     <div class="d-flex justify-content-center">
       <div style="width: 300px">
         <!-- Display success message if available -->
@@ -107,9 +106,10 @@
         <a href="about.html" class="nav-item nav-link">About Us</a>
         <a href="service.html" class="nav-item nav-link">Faqs</a>
         <a href="service.html" class="nav-item nav-link">Blogs</a>
+        <a href="<%=generateUrl('user.subscription.page')%>" class="nav-item nav-link">Subscription Plan</a>
       </div>
     </div>
-    
+
       <div class="dropdown">
         <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="fas fa-user-circle"></i> Profile
@@ -152,7 +152,6 @@
   <h2 class="fw-bold text-center mb-4">User Dashboard</h2>
 
   <div class="row g-4">
-
     <!-- ASSETS -->
     <div class="col-md-4">
       <div class="dashboard-card">
@@ -166,8 +165,8 @@
         </ul>
 
         <div class="d-flex justify-content-between">
-            <a href="" class="btn btn-dashboard">Add Assets</a>
-            <a href="" class="btn btn-dashboard">View Assets</a>
+            <button class="btn btn-dashboard addAssetModalBtn" data-type="cash">Add Asset account</button>
+            <a href="<%=generateUrl('user.asset.details')%>" class="btn btn-dashboard">View Assets</a>
         </div>
       </div>
     </div>
@@ -185,8 +184,8 @@
         </ul>
 
         <div class="d-flex justify-content-between">
-            <a href="" class="btn btn-dashboard">Add Debt account</a>
-            <a href="" class="btn btn-dashboard">View Debts</a>
+            <button class="btn btn-dashboard addDebtModalBtn">Add Debt account</button>
+            <a href="<%=generateUrl('user.debt.details')%>" class="btn btn-dashboard">View Debts</a>
         </div>
       </div>
     </div>
@@ -204,8 +203,8 @@
         </ul>
 
         <div class="d-flex justify-content-between">
-            <a href="" class="btn btn-dashboard">Add Policies</a>
-            <a href="" class="btn btn-dashboard">View Policies</a>
+            <button class="btn btn-dashboard addInsuranceModalBtn" >Add Policy account</button>
+            <a href="<%=generateUrl('user.insurance.details')%>" class="btn btn-dashboard">View Policies</a>
         </div>
         
       </div>
@@ -223,8 +222,8 @@
           <li>Water Suppliers</li>
         </ul>
         <div class="d-flex justify-content-between">
-            <a href="" class="btn btn-dashboard">Add Utilities</a>
-            <a href="" class="btn btn-dashboard">View Utilities</a>
+             <button class="btn btn-dashboard addUtilityModalBtn" >Add Utility account</button>
+            <a href="<%=generateUrl('user.utility.details')%>" class="btn btn-dashboard">View Utilities</a>
         </div>
         
       </div>
@@ -232,7 +231,7 @@
 
     <!-- TRANSITION -->
     <div class="col-md-4">
-      <div class="dashboard-card transition-card">
+      <div class="dashboard-card ">
         <i class="bi bi-person-check"></i>
         <h4>Transition</h4>
         <p>Manage executors & beneficiaries</p>
@@ -243,8 +242,9 @@
         </ul>
 
         <div class="d-flex justify-content-between">
-            <a href="" class="btn btn-dashboard">Add Transition</a>
-            <a href="" class="btn btn-dashboard">View Transition</a>
+            <button class="btn btn-dashboard addExecutorModalBtn" >Add Executor</button>
+            <button class="btn btn-dashboard addBeneficiaryModalBtn" >Add Beneficiary</button>
+            <a href="<%=generateUrl('user.transition.details')%>" class="btn btn-dashboard">View all Transition</a>
         </div>
         
       </div>
@@ -252,6 +252,270 @@
 
   </div>
 </div>
+<!------Asset Modal-------->
+<div class="modal fade" id="addAssetModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" id="addAssetForm">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Add Asset Acount </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Select Cash/Stock Account Name</label>
+          <select class="form-select" id="name">
+            <option value="" disabled>---------------CASH ACCOUNT NAME-----------------</option>
+            <option value="Barclays">Barclays</option>
+            <option value="Lloyds">Lloyds</option>
+            <option value="Marcus">Marcus</option>
+            <option value="Natwest">Natwest</option>
+            <option value="HSBC">HSBC</option>
+            <option value="Monzo">Monzo</option>
+            <option value="Starling">Starling</option>
+            <option value="Revoult">Revoult</option>
+            <option value="">-----------------STOCK ACCOUNT NAME---------------------</option>
+            <option value="Vanguard">Vanguard</option>
+            <option value="Moneyfarm">Moneyfarm</option>
+            <option value="AJ Bell">AJ Bell</option>
+            <option value="Freetrade">Freetrade</option>
+            <option value="Nutmeg">Nutmeg</option>
+            <option value="Wealthify">Wealthify</option>
+            <option value="Hargreaves Lansdown">HargreavesLansdown</option>
+            <option value="Interactive Investor">InteractiveInvestor</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Asset Account Type</label>
+          <select class="form-select" id="accounttype">
+            <option value="cash">Cash</option>
+            <option value="stock">Stock</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="modal-footer d-flex justify-content-between">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+          <button id="addfaq" type="submit" class="btn btn-primary">Add</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!------Debt Modal-------->
+<div class="modal fade" id="addDebtModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" id="addDebtForm">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Add Debt Acount </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Select Credit/Mortage Account Name</label>
+          <select class="form-select" id="debtname">
+            <option value="" disabled>---------------CREDIT CARD ACCOUNT NAME-----------------</option>
+            <option value="American Express">American Express </option>
+            <option value="Barclays">Barclays </option>
+            <option value="HSBC">HSBC </option>
+            <option value="">-----------------MORTAGE ACCOUNT NAME---------------------</option>
+            <option value="Nationwide">Nationwide </option>
+            <option value="Yorkshire Building Society ">Yorkshire Building Society </option>
+            <option value="Skipton Building Society ">Skipton Building Society </option>
+            <option value="Santander">Santander</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Debt Account Type</label>
+          <select class="form-select" id="debtaccounttype">
+            <option value="credit Card">Credit card</option>
+            <option value="mortage">Mortage</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="modal-footer d-flex justify-content-between">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+          <button id="addfaq" type="submit" class="btn btn-primary">Add</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!------Insurance Modal-------->
+<div class="modal fade" id="addInsuranceModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" id="addInsuranceForm">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Add Insurance Acount </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Select Credit/Mortage Account Name</label>
+          <select class="form-select" id="insurancename">
+            <option value="" disabled>---------------LIFE INSURANCE ACCOUNT NAME-----------------</option>
+            <option value="Aviva">Aviva</option>
+            <option value="Royal London">Royal London</option>
+            <option value="Scottish Widows">Scottish Widows</option>
+            <option value="Liverpool Victoria">Liverpool Victoria</option>
+            <option value="Zurich">Zurich</option>
+            <option value="Vitality">Vitality</option>
+            <option value="">-----------------HOME INSURANCE ACCOUNT NAME---------------------</option>
+            <option value="Admiral">Admiral</option>
+            <option value="Direct Line">Direct Line</option>
+            <option value="Halifax">Halifax</option>
+            <option value="Hastings Direct">Hastings Direct</option>
+            <option value="Liverpool Victoria">Liverpool Victoria</option>
+            <option value="Swinton Insurance">Swinton Insurance</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Insurance Account Type</label>
+          <select class="form-select" id="insuranceaccounttype">
+            <option value="Life insurance">Life Insurance </option>
+            <option value="Home insurance">Home Insurance</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer d-flex justify-content-between">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+          <button id="addfaq" type="submit" class="btn btn-primary">Add</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!------Utility Modal-------->
+<div class="modal fade" id="addUtilityModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" id="addUtilityForm">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Energy/Water Account</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Select Energy/Water Account Name</label>
+          <select class="form-select" id="utilityname">
+            <option value="" disabled>---------------ENERGY ACCOUNT NAME-----------------</option>
+            <option value="British Gas">British Gas </option>
+            <option value="Centrica">Centrica</option>
+            <option value="EDF Energy">EDF Energy</option>
+            <option value="National Grid">National Grid</option>
+            <option value="Octopus Energy">Octopus Energy</option>
+            <option value="Scottish Power">Scottish Power</option>
+            <option value="Shell">Shell</option>
+            <option value="SSE">SSE</option>
+            <option value="">-----------------WATER ACCOUNT NAME---------------------</option>
+            <option value="Affinity Water">Affinity Water</option>
+            <option value="Scottish Water">Scottish Water</option>
+            <option value="Severn Trent Water">Severn Trent Water</option>
+            <option value="South West Water">South West Water</option>
+            <option value="South East Water">South East Water</option>
+            <option value="Southern Water">Southern Water</option>
+            <option value="Thames Water">Thames Water</option>
+            <option value="Yorkshire Water">Yorkshire Water</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Utility Account Type</label>
+          <select class="form-select" id="utilityaccounttype">
+            <option value="Energy">Energy</option>
+            <option value="Water">Water</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-between">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+          <button id="addfaq" type="submit" class="btn btn-primary">Add</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-------Add Executor modal-->
+<div class="modal fade" id="addExecutorModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" id="addExecutorForm">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Add Executor Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Executor Name</label>
+          <input type="text" class="form-control" id="executorname"  placeholder="Enter executor name"required>
+      </div>
+      <div class="mb-3">
+          <label class="form-label">Executor email</label>
+          <input type="email" class="form-control" id="executoremail"  placeholder="Enter executor email"required>
+      </div>
+      <div class="mb-3">
+          <label class="form-label">Executor phone</label>
+          <input type="text" class="form-control" id="executorphone"  placeholder="Enter executor contact number"required>
+      </div>
+
+      <div class="modal-footer d-flex justify-content-between">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+          <button id="addfaq" type="submit" class="btn btn-primary">Add</button>
+      </div>
+      </div> 
+
+    </form>
+  </div>
+</div>
+
+<!-------Add Beneficiary modal-->
+<div class="modal fade" id="addBeneficiaryModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" id="addBeneficiaryForm">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Beneficiary Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+          <div class="mb-1">
+            <label class="form-label">Beneficiary Name</label>
+            <input type="text" class="form-control" id="Beneficiaryname" placeholder="Enter beneficiary name" required>
+          </div>
+          <div class="mb-1">
+            <label class="form-label">Beneficiary email</label>
+            <input type="email" class="form-control" id="Beneficiaryemail" placeholder="Enter beneficiary email" required>
+          </div>
+          <div class="mb-1">
+            <label class="form-label">Beneficiary phone</label>
+            <input type="text" class="form-control" id="Beneficiaryphone" placeholder="Enter Beneficiary contact number" required>
+          </div>
+          
+          <div class="modal-footer d-flex justify-content-between">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+            <button id="addfaq" type="submit" class="btn btn-primary">Add</button>
+          </div>
+      </div>
+      
+    </form>
+  </div>
+</div>
+
 
   <div class="container-fluid bg-dark footer pt-5 wow fadeIn" data-wow-delay="0.1s">
     <div class="container py-5">
@@ -316,10 +580,13 @@
   <script src="/lib/waypoints/waypoints.min.js"></script>
   <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
   <script src="/lib/counterup/counterup.min.js"></script>
+  <script src="/js/datatables/app-assets-list.js"></script>
+  <script src="/js/datatables/app-debts-list.js"></script>
+  <script src="/js/datatables/app-insurance-list.js"></script>
+  <script src="/js/datatables/app-utility-list.js"></script>
+  <script src="/js/datatables/app-transition-list.js"></script>
   <!---Flash Js-->
   <script src="/js/flash.js"></script>
-
-
 </body>
 
 </html>

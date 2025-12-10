@@ -26,6 +26,7 @@ class adminRepository extends baseRepository{
                     lastName:1,
                     email:1,
                     contactNumber:1,
+                    is_verified:1,
                     image:1,
                     status:1,
                     subscription:1,

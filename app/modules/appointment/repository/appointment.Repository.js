@@ -5,4 +5,5 @@ class appointmentRepository extends baseRepository{
     constructor(){
         super(appointmentmodel)
     };
-}
+};
+module.exports=new appointmentRepository();

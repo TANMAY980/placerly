@@ -239,7 +239,6 @@ $(function () {
       for (let i = 0; i < files.length; i++) {
         formData.append("coverImage", files[i]);
       }
-
       $.ajax({
         url: "/admin/blog/create",
         type: "POST",

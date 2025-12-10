@@ -111,6 +111,7 @@
         <a href="about.html" class="nav-item nav-link">About Us</a>
         <a href="service.html" class="nav-item nav-link">Faqs</a>
         <a href="service.html" class="nav-item nav-link">Blogs</a>
+        <a href="<%=generateUrl('user.subscription.page')%>" class="nav-item nav-link">Subscription Plan</a>
       </div>
     </div>
     <% if (user) { %>
@@ -509,35 +510,35 @@
         </div>
         <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
           <div class="bg-white rounded p-5">
-            <form>
+            <form action="<%=generateUrl('user.appointment.book')%>"method="Post">
               <div class="row g-3">
                 <div class="col-sm-6">
                   <div class="form-floating">
-                    <input type="text" class="form-control" id="gname" placeholder="Gurdian Name" />
+                    <input type="text" class="form-control" id="gname" name="name" placeholder="Enter Name" />
                     <label for="gname">Your Name</label>
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="form-floating">
-                    <input type="email" class="form-control" id="gmail" placeholder="Gurdian Email" />
+                    <input type="email" class="form-control" id="gmail" name="email" placeholder="Enter Email" />
                     <label for="gmail">Your Email</label>
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="form-floating">
-                    <input type="text" class="form-control" id="cname" placeholder="Child Name" />
+                    <input type="text" class="form-control" id="cname" name="phone" placeholder="Enter Mobile numner" />
                     <label for="cname">Your Mobile</label>
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="form-floating">
-                    <input type="text" class="form-control" id="cage" placeholder="Child Age" />
+                    <input type="text" class="form-control" id="cage" name="serviceType" placeholder="Child Age" />
                     <label for="cage">Service Type</label>
                   </div>
                 </div>
                 <div class="col-12">
                   <div class="form-floating">
-                    <textarea class="form-control" placeholder="Leave a message here" id="message"
+                    <textarea class="form-control" placeholder="Leave a message here" id="message"name="message"
                       style="height: 80px"></textarea>
                     <label for="message">Message</label>
                   </div>

@@ -14,6 +14,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!-- Google Font -->
   <link rel="stylesheet"
@@ -63,28 +64,28 @@
         <!-- Content Wrapper -->
         <div class="content-wrapper">
           <!-- Display Error or success message Message -->
-        <div class="d-flex justify-content-center">
-          <div style="width: 300px">
-            <!-- Display success message if available -->
-            <% if (successMessage.length> 0) { %>
-              <div class="toast-message toast-success">
-                <span>
-                  <%= successMessage[0] %>
-                </span>
-                <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
-              </div>
-              <% } %>
-            
-                <% if (errorMessage.length> 0) { %>
-                  <div class="toast-message toast-error">
-                    <span>
-                      <%= errorMessage[0] %>
-                    </span>
-                    <button onclick="this.parentElement.remove()">✖</button>
-                  </div>
-                  <% } %>
+          <div class="d-flex justify-content-center">
+            <div style="width: 300px">
+              <!-- Display success message if available -->
+              <% if (successMessage.length> 0) { %>
+                <div class="toast-message toast-success">
+                  <span>
+                    <%= successMessage[0] %>
+                  </span>
+                  <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+                </div>
+                <% } %>
+
+                  <% if (errorMessage.length> 0) { %>
+                    <div class="toast-message toast-error">
+                      <span>
+                        <%= errorMessage[0] %>
+                      </span>
+                      <button onclick="this.parentElement.remove()">✖</button>
+                    </div>
+                    <% } %>
+            </div>
           </div>
-        </div>
           <!-- Content Header -->
           <div class="content-header">
             <div class="container-fluid">
@@ -105,90 +106,150 @@
               <div class="card-body">
                 <div class="row w-100 align-items-center">
 
-                      <div class="col-md-8">
-      <div class="d-flex flex-column">
+                  <div class="col-md-8">
+                    <div class="d-flex flex-column">
+                      <p class="fw-bold mb-1">Registered On: <%= response?.createdAt || "NA" %>
+                      </p>
+                      <p class="fw-bold mb-1">First Name: <%= response?.firstName || "NA" %>
+                      </p>
+                      <p class="fw-bold mb-1">Last Name: <%= response?.lastName || "NA" %>
+                      </p>
+                      <p class="fw-bold mb-1">Email Address: <%= response?.email || "NA" %>
+                      </p>
+                      <p class="fw-bold mb-1">Contact Number: <%= response?.contactNumber || "NA" %>
+                      </p>
 
-        <p class="fw-bold mb-1">Registered On: <%= response?.createdAt || "NA" %></p>
-        <p class="fw-bold mb-1">First Name: <%= response?.firstName || "NA" %></p>
-        <p class="fw-bold mb-1">Last Name: <%= response?.lastName || "NA" %></p>
-        <p class="fw-bold mb-1">Email Address: <%= response?.email || "NA" %></p>
-        <p class="fw-bold mb-1">Contact Number: <%= response?.contactNumber || "NA" %></p>
+                      <p class="fw-bold mb-1">
+                        All Subscription:
+                        <% if(response?.subscription?.length) { %>
+                          <% response.subscription.forEach(sub=> { %>
+                            <span class="badge badge-info">
+                              <%= sub.name %> - <%= sub.orgName %>
+                            </span>
+                            <% }) %>
+                              <% } else { %>
+                                NA
+                                <% } %>
+                      </p>
 
-        <p class="fw-bold mb-1">
-          All Subscription:
-          <% if(response?.subscription?.length) { %>
-            <% response.subscription.forEach(sub => { %>
-              <span class="badge badge-info">
-                <%= sub.name %> - <%= sub.orgName %>
-              </span>
-            <% }) %>
-          <% } else { %>
-            NA
-          <% } %>
-        </p>
+                      <p class="fw-bold mb-1">
+                        Status:
+                        <% const statusClass={ active: "badge-light-success" , inactive: "badge-light-secondary" ,
+                          banned: "badge-light-danger" }[response?.status] || "badge-light-secondary" ; %>
+                          <span class="badge <%= statusClass %>">
+                            <%= response?.status %>
+                          </span>
+                      </p>
 
-        <p class="fw-bold mb-1">
-          Status:
-          <% const statusClass = {
-            active: "badge-light-success",
-            inactive: "badge-light-secondary",
-            banned: "badge-light-danger"
-          }[response?.status] || "badge-light-secondary"; %>
-          <span class="badge <%= statusClass %>"><%= response?.status %></span>
-        </p>
+                      <p class="fw-bold mb-1">
+                        Subscription:
+                        <% const subClass=response?.subscribed==="subscribed" ? "badge-light-success"
+                          : "badge-light-warning" ; %>
+                          <span class="badge <%= subClass %>">
+                            <%= response?.subscribed %>
+                          </span>
+                      </p>
 
-        <p class="fw-bold mb-1">
-          Subscription:
-          <% const subClass = response?.subscribed === "subscribed"
-            ? "badge-light-success" : "badge-light-warning"; %>
-          <span class="badge <%= subClass %>"><%= response?.subscribed %></span>
-        </p>
+                      <p class="fw-bold mb-1">
+                        Verify Status:
+                        <% const verifyClass=response?.is_verified ? "badge-light-success" : "badge-light-danger" ; %>
+                          <span class="badge <%= verifyClass %>">
+                            <%= response?.is_verified ? "Verified" : "Not Verified" %>
+                          </span>
+                      </p>
 
-        <p class="fw-bold mb-1">
-          Verify Status:
-          <% const verifyClass = response?.is_verified ? "badge-light-success" : "badge-light-danger"; %>
-          <span class="badge <%= verifyClass %>">
-            <%= response?.is_verified ? "Verified" : "Not Verified" %>
-          </span>
-        </p>
-
-      </div>
-    </div>
-
-    <div class="col-md-4 d-flex flex-column align-items-center">
-                  <div class="profile-upload-box">
-                    <img src="<%= response?.image || '/uploads/default-user.png' %>" id="previewImage" class="profile-big-img"
-                      alt="Profile Image">
-                    <form action="<%= generateUrl('upload.profile.image') %>" method="POST" enctype="multipart/form-data"
-                      class="upload-form">
-                      <label for="uploadImage" class="upload-overlay" title="Upload Image">
-                        <i class="fas fa-camera"></i>
-                      </label>
-                  
-                      <input type="file" id="uploadImage" name="image" accept="image/*" hidden onchange="previewProfile(this)">
-                    </form>
-                  
-                    <% if(response?.image) { %>
-                      <form action="<%= generateUrl('profile.image.delete') %>" method="POST" class="delete-form">
-                        <button type="submit" class="delete-overlay" title="Delete Image">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </form>
-                      <% } %>
-                  
+                    </div>
                   </div>
-                  
-                  <h5 class="mt-2">
-                    <%= user.name %>
-                  </h5>
-                  
+
+                  <div class="col-md-4 d-flex flex-column align-items-center">
+                    <div class="profile-upload-box">
+                      <img src="<%= response?.image || '/uploads/default-user.png' %>" id="previewImage"
+                        class="profile-big-img" alt="Profile Image">
+                      <form action="<%= generateUrl('upload.profile.image') %>" method="POST"
+                        enctype="multipart/form-data" class="upload-form">
+                        <label for="uploadImage" class="upload-overlay" title="Upload Image">
+                          <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="uploadImage" name="image" accept="image/*" hidden
+                          onchange="previewProfile(this)">
+                      </form>
+
+                      <% if(response?.image) { %>
+                        <form action="<%= generateUrl('profile.image.delete') %>" method="POST" class="delete-form">
+                          <button type="submit" class="delete-overlay" title="Delete Image">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </form>
+                        <% } %>
+
+                    </div>
+
+                    <h5 class="mt-2">
+                      <%= user.name %>
+                    </h5>
+                    <button class="btn btn-sm btn-primary mt-2" data-toggle="modal" data-target="#editProfileModal">
+                      <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
           </section>
+        </div>
+        <div class="modal fade" id="editProfileModal" tabindex="-1">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <form id="editProfileForm" class="modal-content" enctype="multipart/form-data">
+              <div class="modal-header">
+                <h5 class="modal-title">Update Profile</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <div class="modal-body">
+
+                <div class="row g-3">
+
+                  <div class="col-md-6">
+                    <label>First Name</label>
+                    <input type="text" class="form-control" name="firstName" value="<%= response?.firstName %>"
+                      required>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label>Last Name</label>
+                    <input type="text" class="form-control" name="lastName" value="<%= response?.lastName %>" required>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label>Email</label>
+                    <input type="email" class="form-control" name="email" value="<%= response?.email %>" required>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label>Contact</label>
+                    <input type="text" class="form-control" name="contactNumber" value="<%= response?.contactNumber %>"
+                      required>
+                  </div>
+
+                  <div class="col-md-12">
+                    <label>Profile Image</label>
+                    <input type="file" class="form-control" name="image" accept="image/*">
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                  update
+                </button>
+              </div>
+
+            </form>
+          </div>
         </div>
   </div>
 
@@ -222,19 +283,41 @@
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
     <script> feather.replace(); </script>
-<script>
-function previewProfile(input) {
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      document.getElementById("previewImage").src = e.target.result;
-    };
-    reader.readAsDataURL(input.files[0]);
-    input.form.submit();
-  }
+    <script>
+      function previewProfile(input) {
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            document.getElementById("previewImage").src = e.target.result;
+          };
+          reader.readAsDataURL(input.files[0]);
+          input.form.submit();
+        }
 
-}
-</script>
+      }
+    </script>
+    <script>
+      $("#editProfileForm").submit(function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        $.ajax({
+          url: "/admin/update/profiledetails",
+          type: "POST",
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function (res) {
+            Swal.fire("Updated", res.message || "Profile updated successfully", "success")
+              .then(() => location.reload());
+          },
+          error: function (xhr) {
+            let msg = "Update failed";
+            if (xhr.responseJSON?.message) msg = xhr.responseJSON.message;
+            Swal.fire("Error", msg, "error");
+          }
+        });
+      });
+    </script>
 
 </body>
 

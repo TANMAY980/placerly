@@ -4,7 +4,6 @@ const mongooseAggregatePaginate = require('mongoose-aggregate-paginate-v2');
 const{Schema,model}=mongoose;
 
 const subScriptionSchema=new Schema({
-    orgname:{type:String,required:true,indx:true},
     name:{type:String,required:true,index:true},
     details:{type:String,required:true},
     charges:{type:Number,required:true},
@@ -17,6 +16,7 @@ const subScriptionSchema=new Schema({
         updatedby:{type:Schema.Types.ObjectId,ref:"user"},
         updatedAt:{type:Date,default:Date.now},
     }],
+    users:[{type:Schema.Types.ObjectId,ref:"user"}],
     isDeleted:{type:Boolean,default:false},
 },{timestamps:true,versionKey:false});
 

@@ -1,0 +1,131 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: #111111;
+}
+
+.netflix-wrapper {
+    min-height: 100vh;
+    background:url("/images/netflix-bg.jpg") no-repeat center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.content h1, .content h2,
+.content .subtitle {
+  color: #fff !important;
+}
+.content {
+    max-width: 1200px;
+    text-align: center;
+    padding: 40px 20px;
+    color: white;
+}
+
+.content h1 {
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.subtitle {
+    opacity: 0.7;
+    margin-bottom: 40px;
+}
+
+/* Plan layout */
+.plans {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
+}
+
+/* Card */
+.plan-card {
+    background: rgba(8, 8, 8, 0.85);
+    padding: 30px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    position: relative;
+    transition: 0.3s ease;
+}
+
+.plan-card:hover {
+    transform: scale(1.05);
+    border-color: #e50914;
+    box-shadow: 0 0 35px rgba(229, 9, 20, 0.25);
+}
+
+/* Highlight */
+.featured {
+    border: 2px solid #e50914;
+    box-shadow: 0 0 30px rgba(229, 9, 20, 0.4);
+}
+
+.badge-popular {
+    position: absolute;
+    top: -14px;
+    right: 10px;
+    background: #e50914;
+    color: white;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+/* Code typography */
+.plan-card h2 {
+    font-size: 22px;
+}
+
+.plan-card h3 {
+    font-size: 36px;
+    margin: 15px 0;
+    color: #e50914;
+}
+
+.plan-card p {
+    opacity: 0.75;
+    font-size: 14px;
+}
+
+/* List */
+.plan-card ul {
+    list-style: none;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.plan-card ul li {
+    padding: 6px 0;
+    font-size: 14px;
+    opacity: .9;
+}
+
+/* Button */
+.plan-card button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: #e50914;
+    color: white;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.plan-card button:hover {
+    background: #ff1f29;
+}
+
+/* Mobile */
+@media(max-width: 600px) {
+    .content h1 {
+        font-size: 2rem;
+    }
+}

@@ -64,7 +64,13 @@ class subscription{
         return res.status(500).json({status:false,message:error.message})
       };
     };
-
+    async getSubscriptionPlan(req,res){
+      try {
+        const data=await subscriptionRepository.getallsubscriptionPlan({isDeleted:false});
+      } catch (error) {
+        
+      }
+    }
     async deleteSubsPlan(req,res){
       try {
         const subsId=new mongoose.Types.ObjectId(req.params.id);

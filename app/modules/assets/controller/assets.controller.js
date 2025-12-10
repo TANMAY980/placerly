@@ -54,14 +54,17 @@ class Assets{
     async createAsset(req,res){
       try {
         const{ name,accounttype}=req.body;
-        console.log(req.body);
-        
+        const userId=new mongoose.Types.ObjectId(req.user.id);
+        if(!name ||!accounttype) return res.status(409).json({status:false,messaeg:"Name and account tpe required"});     
         const check=await assetRepository.getByField({name});
-        if(check) return res.status(409).json({status:false,messaeg:"Asset already exists"});
-
-        const plan={name,accounttype,addedby:req.user.id};
+        
+        if(check) {
+          if(check.name===name && check.accounttype===accounttype && check.userId.toString()===userId.toString()){
+            return res.status(409).json({status:false,message:"Asset account already exists"});
+          }   
+        }; 
+        const plan={name,accounttype,userId};
         const assstdata=await assetRepository.save(plan);
-
         if(!assstdata) return res.status(400).json({status:false,message:"Failed To create Asset"});
 
         return res.status(201).json({Status:true,message:"Successfully created Asset"});

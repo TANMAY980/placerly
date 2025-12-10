@@ -54,6 +54,7 @@ class userRepository extends baseRepository{
                         contactNumber:1,
                         image:1,
                         status:1,
+                        is_verified:1,
                         subscription:1,
                         createdAt:1
                     }
