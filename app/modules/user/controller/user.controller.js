@@ -136,15 +136,15 @@ class User {
 
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        secure: false,  
+        sameSite: "lax",     
         maxAge: 15 * 60 * 1000,
       });
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        secure: false,
+        sameSite: "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
@@ -254,11 +254,12 @@ class User {
           page_title:"Subscription page",
           page_name:"Subscription page",
           user:req.user || null,
-          plans:data
+          plans:data,
+          RAZORPAY_KEY: process.env.RAZORPAY_API_KEY 
       })
     } catch (error) {
       console.log(error);
-      req.flahs("error","Failed to load Subscription Page");
+      req.flash("error","Failed to load Subscription Page");
       return res.redirect(generateUrl('user.home'))
       
     }
@@ -336,7 +337,7 @@ class User {
   
   async aboutPage(req,res){
     try {
-      const data=await cmsRepsoitory.getAboutDetails({isDeleted:false,title:"About"});
+      const data=await cmsRepsoitory.getAboutDetails({isDeleted:false,title:"About us"});
       res.render("user/views/about",{
         page_name:"About page",
         page_title:"About page",

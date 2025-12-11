@@ -28,10 +28,13 @@
 
   <!-- Customized Bootstrap Stylesheet -->
   <link href="/app-assets/css/pages/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!-- Template Stylesheet -->
   <link href="/app-assets/css/pages/style.css" rel="stylesheet" />
   <link href="/app-assets/css/pages/subscriptionpage.css" rel="stylesheet" />
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 </head>
 
 <body>
@@ -155,44 +158,61 @@
   </nav>
   <div class="netflix-wrapper">
 
-  <div class="content">
+    <div class="content">
 
-    <h1>Choose the plan that’s right for you</h1>
-    <p class="subtitle">Head into your digital legacy confidently.</p>
+      <h1>Choose the plan that’s right for you</h1>
+      <p class="subtitle">Head into your digital legacy confidently.</p>
 
-    <div class="plans">
+      <div class="plans">
 
-    <% plans.forEach((plan, index) => { %>
-      
-      <div class="plan-card <%= index === 1 ? 'featured' : '' %>">
+        <% plans.forEach((plan, index)=> { %>
 
-        <% if(index === 1){ %>
-            <span class="badge-popular">MOST POPULAR</span>
-        <% } %>
+          <div class="plan-card <%= index === 1 ? 'featured' : '' %>">
 
-        <h2><%= plan.name %></h2>
-        <h3>₹ <%= plan.charges %></h3>
-        <p><%= plan.details %></p>
+            <% if(index===1){ %>
+              <span class="badge-popular">MOST POPULAR</span>
+              <% } %>
 
-        <ul>
-            <li>Duration: <%= plan.duration %></li>
-            <li>inclusions: <%= plan.inclusions %></li>
-        </ul>
+                <h2>
+                  <%= plan.name %>
+                </h2>
+                <h3>₹ <%= plan.charges %>
+                </h3>
+                <p>
+                  <%= plan.details %>
+                </p>
 
-        <form action="/subscribe" method="POST">
-            <input type="hidden" name="planId" value="<%= plan._id %>">
-            <button>Select Plan</button>
-        </form>
+                <ul>
+                  <li>Duration: <%= plan.duration %>
+                  </li>
+                  <li>inclusions: <%= plan.inclusions %>
+                  </li>
+                </ul>
+
+                <button type="button" <% if (user) { %>
+                  onclick="buySubscription('<%= plan._id %>', '<%= plan.charges %>')"
+                      <% } else { %>
+                        onclick="Swal.fire({
+                        icon: 'warning',
+                        title: 'Login Required',
+                        text: 'You need to login to select a plan!',
+                        confirmButtonText: 'Login'
+                        }).then(() => { window.location.href = '/login'; })"
+                        <% } %>
+                          >
+                          Select Plan
+                </button>
+
+
+          </div>
+
+          <% }) %>
 
       </div>
-
-    <% }) %>
 
     </div>
 
   </div>
-
-</div>
   <!---Footer-->
   <div class="container-fluid bg-dark footer pt-5 wow fadeIn" data-wow-delay="0.1s">
     <div class="container py-5">
@@ -259,6 +279,106 @@
   <script src="/lib/counterup/counterup.min.js"></script>
   <!---Flash Js-->
   <script src="/js/flash.js"></script>
+  <script>
+    async function buySubscription(planId, amount) {
+
+      const confirm = await Swal.fire({
+        title: 'Confirm Subscription',
+        text: `Do you want to pay ₹${amount} for this plan?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, pay now',
+        cancelButtonText: 'Cancel'
+      });
+
+      if (!confirm.isConfirmed) {
+        return;
+      }
+      const response = await fetch("/create/order", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ planId, amount })
+      });
+      const raw = await response.text();
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch (err) {
+        Swal.fire({
+          icon: "error",
+          title: "Something went wrong!",
+          text: "Server returned invalid response",
+        });
+
+        return;
+      }
+
+      if (!data.status) {
+        Swal.fire({
+          icon: "error",
+          title: "Order Failed",
+          text: "Unauthorized or server error while creating order",
+        });
+        return;
+      }
+
+      const options = {
+        key: "<%= RAZORPAY_KEY %>",
+        amount: data.order.amount,
+        currency: "INR",
+        name: "Placerly",
+        description: "Subscription Payment",
+        order_id: data.order.id,
+
+        handler: async function (response) {
+          const verify = await fetch("/verify-payment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(response)
+          });
+
+          const result = await verify.json();
+
+          if (result.status) {
+            Swal.fire({
+              icon: "success",
+              title: "Payment Successful",
+              text: "Your subscription has been activated!",
+              timer: 2000,
+              showConfirmButton: false
+            });
+
+            setTimeout(() => {
+              window.location.href = "/subscription/success";
+            }, 2000);
+
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Payment Verification Failed",
+              text: "Please try again.",
+            });
+          }
+        }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.on("payment.failed", function (response) {
+        Swal.fire({
+          icon: "error",
+          title: "Payment Failed",
+          text: response.error.description || "Payment could not be completed",
+        });
+      });
+
+      rzp.open();
+    }
+  </script>
+
+
+
+
 </body>
 
 </html>

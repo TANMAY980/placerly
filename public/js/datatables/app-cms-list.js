@@ -57,7 +57,13 @@ $(function () {
         },
         columns: [
           { data: "title", title: "Title" },
-          { data: "content", title: "Content" },
+          { data: "content", title: "Content",
+            render: function(data, type, row) {
+            if (data.length > 50) {
+              return data.substring(0, 50) + '...';
+            }
+            return data;
+          }},
           { data: "createdAt", title: "Created On" },
           { data: "addedby", title: "Added By" },
           { data: "status", title: "Status" },
