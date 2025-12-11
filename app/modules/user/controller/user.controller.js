@@ -1,6 +1,9 @@
 const userRepository=require('../repository/user.repostiroy');
 const supportRepository=require('../../support/repository/support.queries.repository');
 const subscriptionRepository=require('../../subscription/repository/subscription.repository');
+const blogRepository=require('../../blog/repository/blog.repository');
+const faqRepository=require('../../faq/repository/faq.repository');
+const cmsRepsoitory=require('../../cms/repository/cms.repository');
 const auth=require('../../../middleware/auth');
 const token=require('../../../helper/generate.Tokens');
 const sendmail=require('../../../helper/send.email');
@@ -247,21 +250,12 @@ class User {
   async subscriptionPage(req,res){
     try {
       const data=await subscriptionRepository.getallsubscription({isDeleted:false});
-      if (req.user) {
-        res.render('user/views/subscription',{
+      res.render('user/views/subscription',{
           page_title:"Subscription page",
           page_name:"Subscription page",
           user:req.user || null,
           plans:data
       })
-      } else {
-        res.render('user/views/subscription',{
-          page_title:"Subscription page",
-          page_name:"Subscription page",
-          user: null,
-          plans:data
-      })
-      }
     } catch (error) {
       console.log(error);
       req.flahs("error","Failed to load Subscription Page");
@@ -304,6 +298,55 @@ class User {
     } catch (error) {
       console.log(error);
       return res.status(500).json({status:false,message:"Failed To update Profile Details"});
+    }
+  };
+
+  async userblogpage(req,res){
+    try {
+      const data = await blogRepository.getblog({isDeleted: false,status: "active"});
+      res.render("user/views/blog", {
+        page_title: "Blog Page",
+        page_name: "Blog page",
+        response: data,
+        user: req.user || null 
+    })
+    } catch (error) {
+      console.log(error);
+      req.flash("error", "Something went Wrong");
+      return res.redirect(generateUrl("user.home"));
+    }
+  };
+
+  async faqPage(req,res){
+    try {
+      const data=await faqRepository.getallfaq({isDeleted:false});
+      res.render("user/views/userfaq",{
+        page_name:"Faq page",
+        page_title:"Faq Page",
+        faqs:data,
+        user:req.user || null
+      })
+      
+    } catch (error) {
+      console.log(error);
+      req.flash("error", "Something went Wrong");
+      return res.redirect(generateUrl("user.home"));
+    }
+  };
+  
+  async aboutPage(req,res){
+    try {
+      const data=await cmsRepsoitory.getAboutDetails({isDeleted:false,title:"About"});
+      res.render("user/views/about",{
+        page_name:"About page",
+        page_title:"About page",
+        user:req.user || null,
+        response:data
+      })
+    } catch (error) {
+      console.log(error);
+      req.flash("error", "Something went Wrong");
+      return res.redirect(generateUrl("user.home"));
     }
   };
 

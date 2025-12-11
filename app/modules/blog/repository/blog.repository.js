@@ -153,5 +153,26 @@ class blogRepository extends baseRepository{
       throw error
     }
   };
+
+  async getblog(filter){
+    try {
+      const data=await blogmodel.aggregate([
+        {
+          $match:filter
+        },
+        {
+          $project:{
+            name:1,
+            title:1,
+            coverImage:1,
+            description:1
+          }
+        }
+      ])
+      return data.length?data[0]:[]
+    } catch (error) {
+      throw error
+    }
+  }
 };
 module.exports=new blogRepository();

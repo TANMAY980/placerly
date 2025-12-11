@@ -144,6 +144,25 @@ class faqRepository extends baseRepository{
       };
     };
 
+    async getallfaq(filter){
+      try {
+        const data=await faqmodel.aggregate([
+          {
+            $match:filter
+          },
+          {
+            $project:{
+              question:1,
+              answer:1
+            }
+          }
+        ]);
+        return data.length?data:[]
+      } catch (error) {
+        throw(error)
+      }
+    }
+
     
 };
 module.exports=new faqRepository();

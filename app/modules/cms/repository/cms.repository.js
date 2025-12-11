@@ -147,6 +147,26 @@ class cmsRepository extends baseRepository{
       } catch (error) {
         throw(error);
       }
+    };
+
+    async getAboutDetails(filter){
+      try {
+        const data=await cmsmodel.aggregate([
+          {
+            $match:filter,
+          },
+          {
+            $project:{
+              title:1,
+              content:1,
+              bannerImage:1
+            }
+          }
+        ]);
+        return data.length?data[0]:[]
+      } catch (error) {
+        throw error
+      }
     }
 };
 
