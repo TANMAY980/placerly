@@ -108,7 +108,7 @@
 
                   <div class="col-md-8">
                     <div class="d-flex flex-column">
-                      <p class="fw-bold mb-1">Registered On: <%= response?.createdAt || "NA" %>
+                      <p class="fw-bold mb-1">Registered On: <%= response?.createdAt.toDateString() || "NA" %>
                       </p>
                       <p class="fw-bold mb-1">First Name: <%= response?.firstName || "NA" %>
                       </p>

@@ -32,6 +32,9 @@ namedRouter.post("user.register","/register",userController.register)
 namedRouter.get("user.login.page","/login",userController.user_login_page);
 namedRouter.get("error.page","/error",userController.error_page);
 namedRouter.post("user.login","/user/login",userController.login);
+namedRouter.get("user.verify","/user/verify",userController.verifyemailPage);
+namedRouter.post("user.verify.email","/verify",userController.verify);
+namedRouter.post("user.resend.otp","/resend/otp",userController.resendOtp);
 namedRouter.get("user.blog.page","/blogpage",auth.attachUser,userController.userblogpage);
 namedRouter.get("user.faq.page","/user/faqpage",auth.attachUser,userController.faqPage);
 namedRouter.get("user.about.page","/user/aboutpage",auth.attachUser,userController.aboutPage);

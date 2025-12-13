@@ -107,18 +107,6 @@
   <div class="forgot-card">
 
     <h3 class="text-center mb-4">Welcome Back,Please login</h3>
-    <!-- Flash messages -->
-    <% if (successMessage && successMessage.length > 0) { %>
-      <div class="alert alert-success">
-        <%= successMessage[0] %>
-      </div>
-    <% } %>
-
-    <% if (errorMessage && errorMessage.length > 0) { %>
-      <div class="alert alert-danger">
-        <%= errorMessage[0] %>
-      </div>
-    <% } %>
     <form action="<%=generateUrl('user.login')%>" method="post" novalidate>
       <div class="input-group mb-3">
         <span class="input-group-text">

@@ -1,6 +1,5 @@
 const mailtransporter=require('../config/email.config');
 const otpmodel=require('../modules/user/model/otp.model');
-const userRepostiroy = require('../modules/user/repository/user.repostiroy');
 
 class Email{
     async SendRegistraionEmail(req,res,user){
@@ -15,7 +14,23 @@ class Email{
             })
         } catch (error) {
             console.log(error);
-      return res.status(500).send("Internal Server Error");
+            return res.status(500).send("Internal Server Error");
+        }
+    };
+
+    async SendUpdateProfile(saveuser){
+        try {
+            const sendmail=await mailtransporter.sendMail({
+                from:process.env.EMAIL_FROM,
+                to:saveuser.email,
+                subject:"user Inactive",
+                html:`<p> Dear ${saveuser.firstName},welcome to Placerly</p>
+                <p> your Profile details has been updated succesfully </P>`
+                
+            })
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send("Internal Server Error");
         }
     };
 
@@ -35,13 +50,17 @@ class Email{
         }
     };
 
-    async Sendotp(req,res,user){
+    async Sendotp(user){
         try {
-            const otp=Math.floor(100 + Math.random()*900000);
+            if (!user || !user._id) {
+                throw new Error("Sendotp called without valid user");
+            }
+            const otp=Math.floor(100000 + Math.random()*900000);
             const existOtp=await otpmodel.findOne({userId:user._id});
             if(existOtp){
                 existOtp.otp=otp;
-                existOtp.createdAt=new Date()
+                existOtp.createdAt=new Date();
+                await existOtp.save();
             }else{
                 await otpmodel({userId:user._id,otp:otp}).save();
             }
@@ -52,10 +71,10 @@ class Email{
                 subject:"OTP - verify your account",
                 html:`<p> Dear ${user.firstName},</p><p>Thank you for signing up with our website. To complete your registration, please verify your email address by entering the following one-time password (OTP)</p>
                 <h2>OTP: ${otp}</h2>
+                <p>Please verify email <a href="https://placerly-u00j.onrender.com/user/verify">verify email</a></p>
                 <p>This OTP is valid for 5 minutes. If you didn't request this OTP, please ignore this email.</p>`
-            })
-            
-            return otp  
+            });
+             return true
         } catch (error) {
             console.log(error);
         }

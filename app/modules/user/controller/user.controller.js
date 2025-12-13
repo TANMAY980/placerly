@@ -9,6 +9,7 @@ const token=require('../../../helper/generate.Tokens');
 const sendmail=require('../../../helper/send.email');
 const mongoose=require('mongoose');
 const jwt=require('jsonwebtoken');
+const otpmodel=require('../../user/model/otp.model');
 
 class User {
 
@@ -41,7 +42,7 @@ class User {
     try {
       const{firstName,lastName,email,contactNumber,password,confirmPassword,terms_condition}=req.body;
       if(!firstName || !lastName || !email || !contactNumber || !password || !confirmPassword || !terms_condition){
-        req.flash("error","Please Enter all the required Fields");
+        req.flash("success","Please Enter all the required Fields");
         return res.redirect(generateUrl('user.registraion.page'));
       };
       const checkuser=await userRepository.getByField({email});
@@ -59,13 +60,20 @@ class User {
         return res.redirect(generateUrl('user.registraion.page'));
       };
       const userdata={firstName,lastName,email,contactNumber,password:encryptPass,confirmPassword,terms_condition};
-      const saveuser=await userRepository.save(userdata);
+      const saveuser=await userRepository.save(userdata);      
       if(!saveuser){
         req.flash("error","Registration Failed Try again");
         return res.redirect(generateUrl('user.registraion.page'));
+      };      
+      const otp = await sendmail.Sendotp(saveuser);
+      if (!otp) {
+          req.flash("error","Something went wrong please register again");
+          return res.redirect(generateUrl("user.login.page"));
       };
+      req.session.userEmail = saveuser.email;
+      await req.session.save();    
       req.flash("success","Registration Successful");
-      return res.redirect(generateUrl('user.login.page'));
+      return res.redirect(generateUrl('user.verify'));
     } catch (error) {
       console.log(error);
       req.flash("error",error.message);
@@ -82,27 +90,29 @@ class User {
         return res.redirect(generateUrl("user.login.page"));
 
       const user = await userRepository.getByField({ email });
-      if (!user) return res.redirect(generateUrl("user.registraion.page"));
+      if (!user){
+        req.flash('error',"Please register your email");
+        return res.redirect(generateUrl("user.registraion.page"));
+      } 
 
       const checkPassword = await auth.check_password(password, user.password);
-      if (!checkPassword) return res.redirect(generateUrl("user.login.page"));
+      if (!checkPassword){
+        req.flash("error","Please enter correct Password");
+        return res.redirect(generateUrl("user.login.page"));
+      } 
 
       if (!user.is_verified) {
         const otp = await sendmail.Sendotp(req, res, user);
         if (!otp) {
           return res.redirect(generateUrl("user.login.page"));
         }
-        return res
-          .status(200)
-          .json({
-            status: true,
-            message:
-              "successfully send otp in your registered email please verify your email and login again",
-          });
+        req.flash("successfull","Please enter your otp to verify your email")
+        return res.redirect(generateUrl('user.verify'));
       }
 
       if (user.status === "inactive") {
         await sendmail.SendInactiveEmail(email);
+        req.flash("error","Your account is Inactive please contact support")
         return res.redirect(generateUrl("user.login.page"));
       }
 
@@ -110,12 +120,18 @@ class User {
       const refreshToken = token.RefreshToken(user);
 
       if (!accessToken || !refreshToken) {
+        req.flash("error","Something went wrong please try again");
         return res.redirect(generateUrl("user.login.page"));
       }
 
       user.refreshToken = refreshToken;
       const savedUser = await user.save();
-      if (!savedUser) return res.redirect(generateUrl("user.login.page"));
+      
+      if (!savedUser){
+        req.flash("error","Something went wrong please try again");
+        return res.redirect(generateUrl("user.login.page"));
+      };
+        
 
       //for session
 
@@ -220,6 +236,77 @@ class User {
     }
   };
 
+  async verifyemailPage(req,res){
+    try {
+      res.render('user/views/verifyemail',{
+        page_title:"Verify email",
+        page_name:"Verify email",
+        session: req.session
+      })
+    } catch (error) {
+      console.log(error);
+      req.flash("erro","Failed to load Verify email page");
+      return res.redirect(genrateUrl('user.registraion.page'))
+    }
+  };
+
+  async verify(req,res){
+    try {
+      const{otp,email}=req.body;
+      if (!otp || otp.length !== 6) {
+        req.flash("error", "Invalid OTP");
+        return res.redirect(generateUrl("user.verify"));
+      };            
+      const check_user=await userRepository.getByField({email})
+      if(!check_user){
+        return res.redirect(generateUrl('user.registraion.page'))
+      }
+      const find_otp=await otpmodel.findOne({userId:check_user._id})
+      if(!find_otp){
+        req.flash('error',"OTP not fond")
+        return res.redirect(generateUrl('user.verify'));
+      }
+      if(find_otp.otp !== otp){
+        req.flash('error',"Invalid otp")
+        return res.redirect(generateUrl('user.verify'));
+      }
+      const currentTime=new Date();
+      const expirationTime=new Date(find_otp.createdAt.getTime() + 5 * 60 * 1000);
+      if(currentTime>expirationTime){
+        await sendmail.Sendotp(req,res,check_user)
+      }
+      check_user.is_verified=true;
+      await check_user.save();
+      await otpmodel.deleteMany({userId:check_user._id})
+      req.flash("success","email verified successfully Please login now");
+      return res.redirect(generateUrl('user.login.page'));
+    } catch (error) {
+      console.log(error);
+      return res.redirect(generateUrl('user.verify'));
+    }
+  };
+
+  async resendOtp(req,res){
+    try {
+      const email=req.session.userEmail;  
+      const checkuser=await userRepository.getByField({email});
+      if(!checkuser) return res.status(400).json({status:false,message:"User need to register first please register",redirect:"/registration"});
+      const user_verify=checkuser.is_verified;
+      if(user_verify){
+        return res.status(400).json({status:false,message:"User already verified please login",redirect: "/login"});
+      }
+      const otp = await sendmail.Sendotp(checkuser);
+      if (!otp) {
+          return res.status(400).json({status:false,message:"Failed to generate OTP",redirect:"/registration"});
+      };
+      return res.status(200).json({status:true,message:"OTP send to your register email"});
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({status:false,message:error.message})
+      
+    }
+  };
+
   async addSupport(req, res) {
     try {
       const { userId, name, email, phone, queries } = req.body;
@@ -295,6 +382,7 @@ class User {
         if(!saveuser){
           return res.status(400).json({status:false,message:"Failed to update Profile details"})
         };
+        await sendmail.SendUpdateProfile(saveuser,user)
         return res.status(200).json({status:true,message:"Successfully updated Profile details"})
     } catch (error) {
       console.log(error);

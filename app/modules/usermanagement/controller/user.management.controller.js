@@ -69,6 +69,7 @@ class usermanagement{
                 page_name:"user details ",
                 page_title:"User details",
                 response:data,
+                user:req.user
 
             })
         } catch (error) {
